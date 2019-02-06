@@ -1,0 +1,16 @@
+PODS:
+  - SVGPath (1.0.0)
+
+DEPENDENCIES:
+  - SVGPath (~> 1.0)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - SVGPath
+
+SPEC CHECKSUMS:
+  SVGPath: 369d11028db7c9a91d2f6fd4b6022c162665a232
+
+PODFILE CHECKSUM: 16a13593b52525072a8f9fa05013e1999cbb132a
+
+COCOAPODS: 1.5.2
