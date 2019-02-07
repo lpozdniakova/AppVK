@@ -23,6 +23,8 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
     var textFieldInsideSearchBar: UITextField?
     var iconView: UIImageView?
     
+    let vkService = VKService()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -44,6 +46,7 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
                 let range = tmp.range(of: searchText, options: NSString.CompareOptions.caseInsensitive)
                 return range.location != NSNotFound
             })
+            vkService.searchVKGroups(q: searchText)
             searchActive = true}
         tableView.reloadData()
     }

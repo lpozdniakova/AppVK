@@ -14,6 +14,8 @@ class FriendsCollectionController: UICollectionViewController, UICollectionViewD
     
     var friendName: Friends?
     var friendsImages: [String] = []
+    
+    let vkService = VKService()
  
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +26,7 @@ class FriendsCollectionController: UICollectionViewController, UICollectionViewD
         if let friend = friendName {
             friendsImages = getFriendImages(friendName: friend.name)
             friendCollectionView.isUserInteractionEnabled = true
+            vkService.loadVKPhotos()
         }
     }
 

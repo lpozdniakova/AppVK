@@ -1,1 +1,0 @@
-../../../SVGPath/SVGPath/SVGPath.h

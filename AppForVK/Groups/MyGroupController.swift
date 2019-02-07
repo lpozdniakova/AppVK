@@ -13,6 +13,8 @@ class MyGroupController: UITableViewController {
     var myGroup = ["iOS"]
     var myGroupImage = ["iOS": "iconIOS"]
     
+    let vkService = VKService()
+    
     @IBAction func addGroup(segue: UIStoryboardSegue) {
         if segue.identifier == "addGroup" {
             let allGroupController = segue.source as! AllGroupController
@@ -43,6 +45,8 @@ class MyGroupController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.rowHeight = 44
+        
+        vkService.loadVKGroups()
     }
 
     // MARK: - Table view data source

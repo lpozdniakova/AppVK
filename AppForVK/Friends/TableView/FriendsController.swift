@@ -30,6 +30,8 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     var textFieldInsideSearchBar: UITextField?
     var iconView: UIImageView?
     
+    let vkService = VKService()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         friendsArray = friendsDataBase
@@ -43,6 +45,8 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
         searchBar.setPositionAdjustment(UIOffset(horizontal: offsetX, vertical: offsetY), for: .search)
         textFieldInsideSearchBar = searchBar.value(forKey: "searchField") as? UITextField
         iconView = textFieldInsideSearchBar?.leftView as? UIImageView
+        
+        vkService.loadVKFriends()
         
         tableView.keyboardDismissMode = .onDrag
     }

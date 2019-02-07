@@ -1,16 +1,16 @@
 PODS:
-  - SVGPath (1.0.0)
+  - Alamofire (5.0.0.beta.1)
 
 DEPENDENCIES:
-  - SVGPath (~> 1.0)
+  - Alamofire (~> 5.0.0.beta.1)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
-    - SVGPath
+    - Alamofire
 
 SPEC CHECKSUMS:
-  SVGPath: 369d11028db7c9a91d2f6fd4b6022c162665a232
+  Alamofire: 2ef6d6c984c5d21c366e9b41a9ae7dfee2b67a44
 
-PODFILE CHECKSUM: 16a13593b52525072a8f9fa05013e1999cbb132a
+PODFILE CHECKSUM: 8f3f7894146c7b3cb77ea7e6bdc65c1e6a76a91e
 
-COCOAPODS: 1.5.2
+COCOAPODS: 1.5.3

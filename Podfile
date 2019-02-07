@@ -1,8 +1,8 @@
 project 'AppForVK.xcodeproj'
 
 # Uncomment the next line to define a global platform for your project
-# platform :ios, '11.0'
+# platform :ios, '12.0'
 
 target 'AppForVK' do
-  pod 'SVGPath', '~> 1.0'
+  pod 'Alamofire', '~> 5.0.0.beta.1'
 end
