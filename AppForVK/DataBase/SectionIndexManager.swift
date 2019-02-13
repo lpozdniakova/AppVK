@@ -10,12 +10,14 @@ import Foundation
 
 class SectionIndexManager {
     
-    static func getOrderedIndexArray(array: [Friends]) -> [Character] {
+    static func getOrderedIndexArray(array: [User]) -> [Character] {
         var indexArray: [Character] = []
         var indexSet = Set<Character>()
         for item in array {
-            let firstLetter = item.name[0]
-            indexSet.insert(firstLetter)
+            if item.last_name != "" {
+                let firstLetter = item.last_name[0]
+                indexSet.insert(firstLetter)
+            }
         }
         for char in indexSet{
             indexArray.append(char)
@@ -24,15 +26,17 @@ class SectionIndexManager {
         return indexArray
     }
     
-    static func getFriendIndexDictionary(array: [Friends]) -> [Character: [Friends]] {
-        var friendIndexDictionary: [Character: [Friends]] = [:]
+    static func getFriendIndexDictionary(array: [User]) -> [Character: [User]] {
+        var friendIndexDictionary: [Character: [User]] = [:]
         
         for item in array {
-            let firstLetter = item.name[0]
-            if (friendIndexDictionary.keys.contains(firstLetter)) {
-                friendIndexDictionary[firstLetter]?.append(item)
-            } else {
-                friendIndexDictionary[firstLetter] = [item]
+            if item.last_name != "" {
+                let firstLetter = item.last_name[0]
+                if (friendIndexDictionary.keys.contains(firstLetter)) {
+                    friendIndexDictionary[firstLetter]?.append(item)
+                } else {
+                    friendIndexDictionary[firstLetter] = [item]
+                }
             }
         }
         return friendIndexDictionary

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class FriendsController: UITableViewController, UISearchBarDelegate {
     
@@ -17,12 +18,13 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     
     //MARK: - Variables and constants
     
-    let transitionManager = TransitionManager()
+    private let vkService = VKService()
+    private var friends = [User]()
+    //let transitionManager = TransitionManager()
     let searchController = UISearchController(searchResultsController: nil)
-    var friendsArray: [Friends] = []
-    var filteredFriend: [Friends] = []
+    var filteredFriend: [User] = []
     var letters: [Character] = []
-    var lettersDictionary: [Character: [Friends]] = [:]
+    var lettersDictionary: [Character: [User]] = [:]
     var searchActive : Bool = false
     
     var offsetX: CGFloat = 0
@@ -30,14 +32,8 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     var textFieldInsideSearchBar: UITextField?
     var iconView: UIImageView?
     
-    let vkService = VKService()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        friendsArray = friendsDataBase
-        filteredFriend = friendsArray
-        updateFriendsIndex(friends: filteredFriend)
-        updateFriendsNamesDictionary(friends: filteredFriend)
         self.tableView.rowHeight = 44
         
         offsetX = searchBar.frame.width / 2 - 14
@@ -46,7 +42,20 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
         textFieldInsideSearchBar = searchBar.value(forKey: "searchField") as? UITextField
         iconView = textFieldInsideSearchBar?.leftView as? UIImageView
         
-        vkService.loadVKFriends()
+        vkService.loadVKFriends(for: Session.shared.userId) { [weak self] friends, error in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            } else if let friends = friends, let self = self {
+                self.friends = friends
+                self.filteredFriend = friends
+                self.updateFriendsIndex(friends: self.filteredFriend)
+                self.updateFriendsNamesDictionary(friends: self.filteredFriend)
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        }
         
         tableView.keyboardDismissMode = .onDrag
     }
@@ -79,10 +88,10 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let char = letters[indexPath.section]
-        let friendName = lettersDictionary[char]?[indexPath.row].name ?? "Ошибка"
-        let friendImage = UIImage(named: lettersDictionary[char]?[indexPath.row].avatarPath ?? "defaultImage.png")
+        let friendName = lettersDictionary[char]?[indexPath.row].full_name
+        let friendImageUrl = lettersDictionary[char]?[indexPath.row].photo_50
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendsCell
-        cell.friendImage.image = friendImage
+        cell.friendImage.kf.setImage(with: URL(string: friendImageUrl ?? "https://vk.com/images/camera_50.png"))
         cell.friendName.text = friendName
         return cell
     }
@@ -90,13 +99,13 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     //MARK: - Setup searchBar
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        filteredFriend = friendsArray.filter({ (friend) -> Bool in FirstLetterSearch.isMatched(searchBase: friend.name, searchString: searchText)})
+        filteredFriend = friends.filter({ (friend) -> Bool in FirstLetterSearch.isMatched(searchBase: friend.full_name, searchString: searchText)})
         updateFriendsIndex(friends: filteredFriend)
         updateFriendsNamesDictionary(friends: filteredFriend)
         
         if (searchText.count == 0) {
-            updateFriendsIndex(friends: friendsArray)
-            updateFriendsNamesDictionary(friends: friendsArray)
+            updateFriendsIndex(friends: friends)
+            updateFriendsNamesDictionary(friends: friends)
             searchActive = false
             hideKeyboard()
         }
@@ -120,8 +129,8 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
         searchBar.resignFirstResponder()
         searchBar.text = nil
         searchBar.endEditing(true)
-        updateFriendsIndex(friends: friendsArray)
-        updateFriendsNamesDictionary(friends: friendsArray)
+        updateFriendsIndex(friends: friends)
+        updateFriendsNamesDictionary(friends: friends)
         searchActive = false
         hideKeyboard()
         tableView.reloadData()
@@ -139,25 +148,25 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     
     //MARK: - Prepare data
     
-    func updateFriendsNamesDictionary(friends: [Friends]) {
+    func updateFriendsNamesDictionary(friends: [User]) {
         lettersDictionary = SectionIndexManager.getFriendIndexDictionary(array: friends)
     }
     
-    func updateFriendsIndex(friends: [Friends]) {
+    func updateFriendsIndex(friends: [User]) {
         letters = SectionIndexManager.getOrderedIndexArray(array: friends)
     }
     
     // MARK: - Navigation
-
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showFriends" {
             let friendsCollectionController : FriendsCollectionController = segue.destination as! FriendsCollectionController
             if let selection = self.tableView.indexPathForSelectedRow {
                 let char = letters[selection.section]
                 if let selectedFriend = lettersDictionary[char]?[selection.row] {
-                    friendsCollectionController.friendName = selectedFriend
+                    friendsCollectionController.user = selectedFriend.id
                 }
             }
-        } 
+        }
     }
 }

@@ -7,15 +7,14 @@
 //
 
 import UIKit
+import Kingfisher
 
 class AllGroupController: UITableViewController, UISearchBarDelegate {
 
     @IBOutlet weak var searchBar: UISearchBar! //searchGroups
 
     let searchController = UISearchController(searchResultsController: nil)
-    let arrayGroup = ["AI", "WEB", "Python", "Java", "Game Dev", "iOS", "Android", "InfoSec"]
-    var arrayGroupsImage = ["AI": "iconAI.png", "WEB": "iconWEB.png", "Python": "iconPython", "Java": "iconJava.png", "Game Dev": "iconGameDev.png", "iOS": "iconIOS.png", "Android": "iconAndroid.png", "InfoSec": "iconInfoSec.png"]
-    var filteredGroup: [String] = []
+    var filteredGroup: [Group] = []
     var searchActive : Bool = false
     
     var offsetX: CGFloat = 0
@@ -41,12 +40,17 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
         if searchText == "" {
             searchActive = false
         } else {
-            filteredGroup = arrayGroup.filter({(text) -> Bool in
-                let tmp: NSString = text as NSString
-                let range = tmp.range(of: searchText, options: NSString.CompareOptions.caseInsensitive)
-                return range.location != NSNotFound
-            })
-            vkService.searchVKGroups(q: searchText)
+            vkService.searchVKGroups(q: searchText) { [weak self] groups, error in
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                } else if let groups = groups, let self = self {
+                    self.filteredGroup = groups
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                }
+            }
             searchActive = true}
         tableView.reloadData()
     }
@@ -85,10 +89,6 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
         return 1
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return arrayGroup.count;
-    }
-    
     func searchBarIsEmpty() -> Bool {
         return searchController.searchBar.text?.isEmpty ?? true
     }
@@ -101,7 +101,7 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
         if searchActive {
             return filteredGroup.count
         } else {
-            return arrayGroup.count
+            return 0
         }
     }
 
@@ -109,15 +109,12 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "AllGroupCell", for: indexPath) as! AllGroupCell
         
         if searchActive {
-            cell.allGroupName.text = filteredGroup[indexPath.row]
-            if let nameAvatar = arrayGroupsImage[filteredGroup[indexPath.row]] {
-                cell.allGroupImage.image = UIImage(named: nameAvatar)
-            }
-        } else { cell.allGroupName.text = arrayGroup[indexPath.row]
-            //cell.allGroupName.text = group
-            if let nameAvatar = arrayGroupsImage[arrayGroup[indexPath.row]] {
-                cell.allGroupImage.image = UIImage(named: nameAvatar)
-            }
+            cell.allGroupName.text = filteredGroup[indexPath.row].name
+            let imageURL = filteredGroup[indexPath.row].photo_50
+            cell.allGroupImage.kf.setImage(with: URL(string: imageURL))
+        } else {
+            cell.allGroupName.text = ""
+            cell.allGroupImage.image = nil
         }
         return cell
     }

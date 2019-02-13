@@ -14,8 +14,9 @@ class MyGroupController: UITableViewController {
     var myGroupImage = ["iOS": "iconIOS"]
     
     let vkService = VKService()
-    
-    @IBAction func addGroup(segue: UIStoryboardSegue) {
+    var groups = [Group]()
+    //TODO: - Реализовать функционал добавления группы
+    /*@IBAction func addGroup(segue: UIStoryboardSegue) {
         if segue.identifier == "addGroup" {
             let allGroupController = segue.source as! AllGroupController
             if allGroupController.searchActive == false {
@@ -40,42 +41,45 @@ class MyGroupController: UITableViewController {
                 }
             }
         }
-    }
+    }*/
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.rowHeight = 44
         
-        vkService.loadVKGroups()
+        vkService.loadVKGroups(for: Session.shared.userId) { [weak self] groups, error in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            } else if let groups = groups, let self = self {
+                self.groups = groups
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        }
     }
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return myGroup.count
+        return groups.count
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "myGroupCell", for: indexPath) as! MyGroupCell
-        let group = myGroup[indexPath.row]
-        cell.myGroupName.text = group
-        
-       if let nameAvatar = myGroupImage[group] {
-            cell.myGroupImage.image = UIImage(named: nameAvatar)
-        }
-
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "myGroupCell", for: indexPath) as? MyGroupCell else { return UITableViewCell() }
+        cell.configure(with: groups[indexPath.row])
         return cell
     }
  
     // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    //TODO: - Сделать чтобы при свайпе исключался из группы
+    /*override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // Delete the row from the data source
             //myGroup.remove(at: indexPath.row)
@@ -86,5 +90,5 @@ class MyGroupController: UITableViewController {
             
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
-    }
+    }*/
 }

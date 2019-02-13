@@ -9,12 +9,17 @@
 import Foundation
 
 extension String {
-    subscript (i: Int) -> Character {
-        return self[index(startIndex, offsetBy: i)]
+    subscript(index: Int) -> Character {
+        let startIndex = self.index(self.startIndex, offsetBy: index)
+        return self[startIndex]
     }
-}
+    
+    subscript(range: NSRange) -> String {
+        let startIndex = self.index(self.startIndex, offsetBy: range.location)
+        let endIndex = self.index(startIndex, offsetBy: range.length)
+        return String(self[startIndex..<endIndex])
+    }
 
-extension String {
     subscript(value: CountableClosedRange<Int>) -> Substring {
         get {
             return self[index(at: value.lowerBound)...index(at: value.upperBound)]

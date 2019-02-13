@@ -7,13 +7,15 @@
 //
 
 import UIKit
+import Kingfisher
 
 class FriendsCollectionController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
 
     @IBOutlet var friendCollectionView: UICollectionView!
     
-    var friendName: Friends?
     var friendsImages: [String] = []
+    var user: Int = 0
+    var photos = [Photo]()
     
     let vkService = VKService()
  
@@ -23,10 +25,16 @@ class FriendsCollectionController: UICollectionViewController, UICollectionViewD
         self.navigationController?.navigationBar.barStyle = .blackTranslucent
         self.addGestures()
         
-        if let friend = friendName {
-            friendsImages = getFriendImages(friendName: friend.name)
-            friendCollectionView.isUserInteractionEnabled = true
-            vkService.loadVKPhotos()
+        vkService.loadVKPhotos(for: user) { [weak self] photos, error in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            } else if let photos = photos, let self = self {
+                self.photos = photos
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
+            }
         }
     }
 
@@ -35,12 +43,13 @@ class FriendsCollectionController: UICollectionViewController, UICollectionViewD
     }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return friendsImages.count
+        return photos.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FriendCollectionCell", for: indexPath) as! FriendsCollectionCell
-        cell.friendImage.image = UIImage(named: friendsImages[indexPath.row])
+        let imageURL = photos[indexPath.row].url
+        cell.friendImage.kf.setImage(with: URL(string: imageURL))
         return cell
     }
     
@@ -61,7 +70,9 @@ class FriendsCollectionController: UICollectionViewController, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: self.view.frame.width, height: self.view.frame.width)
+        let width = self.view.frame.width
+        let height = self.view.frame.height
+        return CGSize(width: width, height: height)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

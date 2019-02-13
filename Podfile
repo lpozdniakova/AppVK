@@ -4,5 +4,7 @@ project 'AppForVK.xcodeproj'
 # platform :ios, '12.0'
 
 target 'AppForVK' do
-  pod 'Alamofire', '~> 5.0.0.beta.1'
+  pod 'Alamofire'
+  pod 'SwiftyJSON'
+  pod 'Kingfisher'
 end

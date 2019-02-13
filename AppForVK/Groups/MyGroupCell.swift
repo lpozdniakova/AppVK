@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class MyGroupCell: UITableViewCell {
 
@@ -15,13 +16,16 @@ class MyGroupCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    }
+    
+    public func configure(with group: Group) {
+        myGroupName.text = group.name
+        let iconUrl = group.photo_50
+        myGroupImage.kf.setImage(with: URL(string: iconUrl))
     }
 
 }
