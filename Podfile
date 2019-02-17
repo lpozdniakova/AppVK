@@ -4,7 +4,10 @@ project 'AppForVK.xcodeproj'
 # platform :ios, '12.0'
 
 target 'AppForVK' do
-  pod 'Alamofire'
-  pod 'SwiftyJSON'
-  pod 'Kingfisher'
+    use_frameworks!
+    
+  pod 'Alamofire', '~> 4.8'
+  pod 'SwiftyJSON', '~> 4.2'
+  pod 'Kingfisher', '~> 5.1'
+  pod 'RealmSwift', '~> 3.13'
 end

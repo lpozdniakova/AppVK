@@ -8,28 +8,28 @@
 
 import Foundation
 import SwiftyJSON
+import RealmSwift
 
-class User: CustomStringConvertible {
-    var description: String {
-        return "Name is \(first_name)"
-    }
+class User: Object {
     
     //MARK: - Basic fields
     
-    let id: Int
-    let first_name: String
-    let last_name: String
-    let deactivated: String
-    let is_closed: Int
-    let can_access_closed: Int
-    let full_name: String
+    @objc dynamic var id: Int = 0
+    @objc dynamic var first_name: String = ""
+    @objc dynamic var last_name: String = ""
+    @objc dynamic var deactivated: String = ""
+    @objc dynamic var is_closed: Int = 0
+    @objc dynamic var can_access_closed: Int = 0
+    @objc dynamic var full_name: String = ""
     
     //MARK: - Optional fields
-    let nickname: String
-    let online: Int
-    let photo_50: String
+    @objc dynamic var nickname: String = ""
+    @objc dynamic var online: Int = 0
+    @objc dynamic var photo_50: String = ""
     
-    init(json: JSON) {
+    convenience init(json: JSON) {
+        self.init()
+        
         self.id = json["id"].intValue
         self.first_name = json["first_name"].stringValue
         self.last_name = json["last_name"].stringValue

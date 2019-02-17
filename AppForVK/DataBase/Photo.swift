@@ -8,21 +8,23 @@
 
 import Foundation
 import SwiftyJSON
+import RealmSwift
 
-class Photo {
+class Photo: Object {
     
     //MARK: - Basic fields
-    let owner_id: Int
-    let extended: Int
-    let offset: Int
-    let count: Int
-    let photo_sizes: Int
-    let no_service_albums: Int
-    let need_hidden: Int
-    let skip_hidden: Int
-    let url: String
+    @objc dynamic var owner_id: Int = 0
+    @objc dynamic var extended: Int = 0
+    @objc dynamic var offset: Int = 0
+    @objc dynamic var count: Int = 0
+    @objc dynamic var photo_sizes: Int = 0
+    @objc dynamic var no_service_albums: Int = 0
+    @objc dynamic var need_hidden: Int = 0
+    @objc dynamic var skip_hidden: Int = 0
+    @objc dynamic var url: String = ""
     
-    init(json: JSON) {
+     convenience init(json: JSON) {
+        self.init()
         self.owner_id = json["owner_id"].intValue
         self.extended = json["extended"].intValue
         self.offset = json["offset"].intValue

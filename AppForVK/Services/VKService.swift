@@ -118,4 +118,28 @@ class VKService {
             }
         }
     }
+    
+    func leaveGroup(for group: Int) {
+        let path = "/method/groups.leave"
+        let parameters: Parameters = [
+            "group_id": group,
+            "access_token": Session.shared.token,
+            "v": versionAPI
+        ]
+        let url = baseUrl + path
+        
+        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON
+    }
+    
+    func joinGroup(for group: Int) {
+        let path = "/method/groups.join"
+        let parameters: Parameters = [
+            "group_id": group,
+            "access_token": Session.shared.token,
+            "v": versionAPI
+        ]
+        let url = baseUrl + path
+        
+        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON
+    }
 }

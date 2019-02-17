@@ -8,24 +8,26 @@
 
 import Foundation
 import SwiftyJSON
+import RealmSwift
 
-class Group {
+class Group: Object {
     
     //MARK: - Basic fields
-    let id: Int
-    let name: String
-    let screen_name: String
-    let is_closed: Int
-    let deactivated: String
-    let type: String
-    let is_admin: Int
-    let is_member: Int
-    let is_advertiser: Int
-    let photo_50: String
-    let photo_100: String
-    let photo_200: String
+    @objc dynamic var id: Int = 0
+    @objc dynamic var name: String = ""
+    @objc dynamic var screen_name: String = ""
+    @objc dynamic var is_closed: Int = 0
+    @objc dynamic var deactivated: String = ""
+    @objc dynamic var type: String = ""
+    @objc dynamic var is_admin: Int = 0
+    @objc dynamic var is_member: Int = 0
+    @objc dynamic var is_advertiser: Int = 0
+    @objc dynamic var photo_50: String = ""
+    @objc dynamic var photo_100: String = ""
+    @objc dynamic var photo_200: String = ""
     
-    init(json: JSON) {
+    convenience init(json: JSON) {
+        self.init()
         self.id = json["id"].intValue
         self.name = json["name"].stringValue
         self.screen_name = json["screen_name"].stringValue

@@ -40,6 +40,7 @@
 		46D7663A2202235500C4B8B0 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D766392202235500C4B8B0 /* String+Extensions.swift */; };
 		46D7663C2202B9C000C4B8B0 /* TransitionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D7663B2202B9C000C4B8B0 /* TransitionManager.swift */; };
 		46D766432203080B00C4B8B0 /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D766422203080B00C4B8B0 /* UIView+Extensions.swift */; };
+		7641CADC55FC2D239209BFDD /* Pods_AppForVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38B81FD7DF21D7D6F1754DFF /* Pods_AppForVK.framework */; };
 		C41C98C921CFA45E00451CC4 /* FriendsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41C98C821CFA45E00451CC4 /* FriendsController.swift */; };
 		C41C98CB21CFA4E300451CC4 /* FriendsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41C98CA21CFA4E300451CC4 /* FriendsCell.swift */; };
 		C41C98CD21CFD82C00451CC4 /* FriendsCollectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41C98CC21CFD82C00451CC4 /* FriendsCollectionController.swift */; };
@@ -55,10 +56,10 @@
 		C4FE429721D3D6EA002F28CB /* AllGroupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FE429621D3D6EA002F28CB /* AllGroupController.swift */; };
 		C4FE429921D3D767002F28CB /* MyGroupCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FE429821D3D767002F28CB /* MyGroupCell.swift */; };
 		C4FE429B21D3D798002F28CB /* AllGroupCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FE429A21D3D798002F28CB /* AllGroupCell.swift */; };
-		F262F1E0D11EC2A16FCDD072 /* libPods-AppForVK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F0ADADE587195FC20BE8655E /* libPods-AppForVK.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		38B81FD7DF21D7D6F1754DFF /* Pods_AppForVK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AppForVK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4606E2FE2212AC2F007FA007 /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		46140B7621FEB94C00967BF6 /* NewsShareController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsShareController.swift; sourceTree = "<group>"; };
 		46140B7721FEB94C00967BF6 /* NewsCommentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsCommentController.swift; sourceTree = "<group>"; };
@@ -111,7 +112,6 @@
 		C4FE429821D3D767002F28CB /* MyGroupCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyGroupCell.swift; sourceTree = "<group>"; };
 		C4FE429A21D3D798002F28CB /* AllGroupCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllGroupCell.swift; sourceTree = "<group>"; };
 		EE9AA7B0D98CDB0622E1893F /* Pods-AppForVK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppForVK.release.xcconfig"; path = "Pods/Target Support Files/Pods-AppForVK/Pods-AppForVK.release.xcconfig"; sourceTree = "<group>"; };
-		F0ADADE587195FC20BE8655E /* libPods-AppForVK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AppForVK.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,7 +119,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F262F1E0D11EC2A16FCDD072 /* libPods-AppForVK.a in Frameworks */,
+				7641CADC55FC2D239209BFDD /* Pods_AppForVK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,7 +236,7 @@
 		6ECABCB5BF0A74CCFFF20274 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F0ADADE587195FC20BE8655E /* libPods-AppForVK.a */,
+				38B81FD7DF21D7D6F1754DFF /* Pods_AppForVK.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -316,6 +316,7 @@
 				C4ACB73421C4E46D00459EB9 /* Sources */,
 				C4ACB73521C4E46D00459EB9 /* Frameworks */,
 				C4ACB73621C4E46D00459EB9 /* Resources */,
+				B5D9CF729DBB6AD0AB785C3D /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -399,6 +400,36 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B5D9CF729DBB6AD0AB785C3D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AppForVK/Pods-AppForVK-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
+				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
+				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AppForVK/Pods-AppForVK-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

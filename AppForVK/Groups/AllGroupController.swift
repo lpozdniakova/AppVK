@@ -119,4 +119,3 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
         return cell
     }
 }
-

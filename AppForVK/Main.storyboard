@@ -285,7 +285,7 @@
                     <navigationItem key="navigationItem" title="Группы" id="Wyt-8J-Q1i">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="yXJ-Ar-KgR">
                             <connections>
-                                <segue destination="iJS-X2-tmg" kind="show" identifier="" id="XGQ-jC-fv5"/>
+                                <segue destination="iJS-X2-tmg" kind="show" identifier="addGroup" id="XGQ-jC-fv5"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
