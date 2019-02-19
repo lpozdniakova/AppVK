@@ -8,6 +8,7 @@
 
 import UIKit
 import Kingfisher
+import RealmSwift
 
 class FriendsCollectionController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
 
@@ -24,18 +25,7 @@ class FriendsCollectionController: UICollectionViewController, UICollectionViewD
         self.tabBarController?.tabBar.isHidden = true
         self.navigationController?.navigationBar.barStyle = .blackTranslucent
         self.addGestures()
-        
-        vkService.loadVKPhotos(for: user) { [weak self] photos, error in
-            if let error = error {
-                print(error.localizedDescription)
-                return
-            } else if let photos = photos, let self = self {
-                self.photos = photos
-                DispatchQueue.main.async {
-                    self.collectionView.reloadData()
-                }
-            }
-        }
+        loadPhotos(for: user)
     }
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -110,6 +100,51 @@ class FriendsCollectionController: UICollectionViewController, UICollectionViewD
                 dismiss(animated: true, completion: nil)
             }
         default: return
+        }
+    }
+    
+    func loadPhotosFromVK(for user: Int) {
+        vkService.loadVKPhotos(for: user) { [weak self] photos, error in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            } else if let photos = photos, let self = self {
+                self.photos = photos
+                self.savePhotos(photos)
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
+            }
+        }
+    }
+    
+    // MARK: - Realm
+    
+    func savePhotos(_ photos: [Photo]) {
+        do {
+            let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
+            let realm = try Realm(configuration: config)
+            //let realm = try Realm()
+            realm.beginWrite()
+            realm.add(photos, update: true)
+            try realm.commitWrite()
+            print(realm.configuration.fileURL!)
+        } catch {
+            print(error)
+        }
+    }
+    
+    func loadPhotos(for user: Int) {
+        do {
+            let realm = try Realm()
+            let photos = realm.objects(Photo.self).filter("ownerId == %@", user)
+            if photos.count == 0 {
+                loadPhotosFromVK(for: user)
+            } else {
+                self.photos = Array(photos)
+            }
+        } catch {
+            print(error)
         }
     }
 }

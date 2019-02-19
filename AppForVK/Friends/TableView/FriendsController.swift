@@ -8,6 +8,7 @@
 
 import UIKit
 import Kingfisher
+import RealmSwift
 
 class FriendsController: UITableViewController, UISearchBarDelegate {
     
@@ -51,6 +52,7 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
                 self.filteredFriend = friends
                 self.updateFriendsIndex(friends: self.filteredFriend)
                 self.updateFriendsNamesDictionary(friends: self.filteredFriend)
+                self.saveFriends(friends)
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
@@ -88,7 +90,7 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let char = letters[indexPath.section]
-        let friendName = lettersDictionary[char]?[indexPath.row].full_name
+        let friendName = lettersDictionary[char]?[indexPath.row].fullName
         let friendImageUrl = lettersDictionary[char]?[indexPath.row].photo_50
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendsCell
         cell.friendImage.kf.setImage(with: URL(string: friendImageUrl ?? "https://vk.com/images/camera_50.png"))
@@ -99,7 +101,7 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     //MARK: - Setup searchBar
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        filteredFriend = friends.filter({ (friend) -> Bool in FirstLetterSearch.isMatched(searchBase: friend.full_name, searchString: searchText)})
+        filteredFriend = friends.filter({ (friend) -> Bool in FirstLetterSearch.isMatched(searchBase: friend.fullName, searchString: searchText)})
         updateFriendsIndex(friends: filteredFriend)
         updateFriendsNamesDictionary(friends: filteredFriend)
         
@@ -149,11 +151,28 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     //MARK: - Prepare data
     
     func updateFriendsNamesDictionary(friends: [User]) {
-        lettersDictionary = SectionIndexManager.getFriendIndexDictionary(array: friends)
+        let sortedFriends = friends.sorted(by: { $0.fullName < $1.fullName })
+        lettersDictionary = SectionIndexManager.getFriendIndexDictionary(array: sortedFriends)
     }
     
     func updateFriendsIndex(friends: [User]) {
         letters = SectionIndexManager.getOrderedIndexArray(array: friends)
+    }
+    
+    // MARK: - Realm
+    
+    func saveFriends(_ friends: [User]) {
+        do {
+            let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
+            let realm = try Realm(configuration: config)
+            //let realm = try Realm()
+            realm.beginWrite()
+            realm.add(friends, update: true)
+            try realm.commitWrite()
+            print(realm.configuration.fileURL!)
+        } catch {
+            print(error)
+        }
     }
     
     // MARK: - Navigation

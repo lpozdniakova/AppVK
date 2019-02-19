@@ -14,8 +14,8 @@ class SectionIndexManager {
         var indexArray: [Character] = []
         var indexSet = Set<Character>()
         for item in array {
-            if item.last_name != "" {
-                let firstLetter = item.last_name[0]
+            if item.lastName != "" {
+                let firstLetter = item.lastName[0]
                 indexSet.insert(firstLetter)
             }
         }
@@ -30,8 +30,8 @@ class SectionIndexManager {
         var friendIndexDictionary: [Character: [User]] = [:]
         
         for item in array {
-            if item.last_name != "" {
-                let firstLetter = item.last_name[0]
+            if item.lastName != "" {
+                let firstLetter = item.lastName[0]
                 if (friendIndexDictionary.keys.contains(firstLetter)) {
                     friendIndexDictionary[firstLetter]?.append(item)
                 } else {
