@@ -12,6 +12,9 @@ class FriendsCell: UITableViewCell {
 
     @IBOutlet weak var friendName: UILabel!
     @IBOutlet weak var friendImage: UIImageView!
+    @IBOutlet weak var friendOnlineStatus: UIImageView!
+    @IBOutlet weak var onlineStatusConstraintHeight: NSLayoutConstraint!
+    @IBOutlet weak var onlineStatusConstraintWidth: NSLayoutConstraint!
     
     override func awakeFromNib() {
         super.awakeFromNib()

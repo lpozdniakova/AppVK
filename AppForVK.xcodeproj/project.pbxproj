@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4606E2FF2212AC2F007FA007 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4606E2FE2212AC2F007FA007 /* Photo.swift */; };
+		4606E30122203458007FA007 /* RealmProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4606E30022203458007FA007 /* RealmProvider.swift */; };
 		46140B7A21FEB94C00967BF6 /* NewsShareController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46140B7621FEB94C00967BF6 /* NewsShareController.swift */; };
 		46140B7B21FEB94C00967BF6 /* NewsCommentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46140B7721FEB94C00967BF6 /* NewsCommentController.swift */; };
 		46140B7C21FEB94C00967BF6 /* NewsCountViewControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46140B7821FEB94C00967BF6 /* NewsCountViewControl.swift */; };
@@ -61,6 +62,7 @@
 /* Begin PBXFileReference section */
 		38B81FD7DF21D7D6F1754DFF /* Pods_AppForVK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AppForVK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4606E2FE2212AC2F007FA007 /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
+		4606E30022203458007FA007 /* RealmProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmProvider.swift; sourceTree = "<group>"; };
 		46140B7621FEB94C00967BF6 /* NewsShareController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsShareController.swift; sourceTree = "<group>"; };
 		46140B7721FEB94C00967BF6 /* NewsCommentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsCommentController.swift; sourceTree = "<group>"; };
 		46140B7821FEB94C00967BF6 /* NewsCountViewControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsCountViewControl.swift; sourceTree = "<group>"; };
@@ -210,6 +212,7 @@
 			isa = PBXGroup;
 			children = (
 				46D38F7E220B0C93006BDF78 /* VKService.swift */,
+				4606E30022203458007FA007 /* RealmProvider.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -473,6 +476,7 @@
 				46140B7A21FEB94C00967BF6 /* NewsShareController.swift in Sources */,
 				46D7663A2202235500C4B8B0 /* String+Extensions.swift in Sources */,
 				46797FCF21E9BE3C00CA015F /* FriendImageView.swift in Sources */,
+				4606E30122203458007FA007 /* RealmProvider.swift in Sources */,
 				C4FE429521D3D6B2002F28CB /* MyGroupController.swift in Sources */,
 				46140B7B21FEB94C00967BF6 /* NewsCommentController.swift in Sources */,
 				46797FCD21E9BD6800CA015F /* ShadowView.swift in Sources */,

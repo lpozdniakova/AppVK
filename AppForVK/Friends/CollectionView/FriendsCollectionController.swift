@@ -14,11 +14,11 @@ class FriendsCollectionController: UICollectionViewController, UICollectionViewD
 
     @IBOutlet var friendCollectionView: UICollectionView!
     
-    var friendsImages: [String] = []
+    private let vkService = VKService()
+    private var friendsImages: [String] = []
+    private var photos: Results<Photo>?
+    private let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
     var user: Int = 0
-    var photos = [Photo]()
-    
-    let vkService = VKService()
  
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,13 +33,13 @@ class FriendsCollectionController: UICollectionViewController, UICollectionViewD
     }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photos.count
+        return photos?.count ?? 0
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FriendCollectionCell", for: indexPath) as! FriendsCollectionCell
-        let imageURL = photos[indexPath.row].url
-        cell.friendImage.kf.setImage(with: URL(string: imageURL))
+        let imageURL = photos?[indexPath.row].url
+        cell.friendImage.kf.setImage(with: URL(string: imageURL ?? "https://vk.com/images/error404.png"))
         return cell
     }
     
@@ -61,7 +61,8 @@ class FriendsCollectionController: UICollectionViewController, UICollectionViewD
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = self.view.frame.width
-        let height = self.view.frame.height
+        //let height = self.view.frame.height
+        let height = collectionView.contentSize.height
         return CGSize(width: width, height: height)
     }
     
@@ -103,35 +104,22 @@ class FriendsCollectionController: UICollectionViewController, UICollectionViewD
         }
     }
     
+    // MARK: - Realm
+    
     func loadPhotosFromVK(for user: Int) {
         vkService.loadVKPhotos(for: user) { [weak self] photos, error in
             if let error = error {
                 print(error.localizedDescription)
                 return
             } else if let photos = photos, let self = self {
-                self.photos = photos
-                self.savePhotos(photos)
+                RealmProvider.save(items: photos)
                 DispatchQueue.main.async {
                     self.collectionView.reloadData()
                 }
             }
         }
-    }
-    
-    // MARK: - Realm
-    
-    func savePhotos(_ photos: [Photo]) {
-        do {
-            let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
-            let realm = try Realm(configuration: config)
-            //let realm = try Realm()
-            realm.beginWrite()
-            realm.add(photos, update: true)
-            try realm.commitWrite()
-            print(realm.configuration.fileURL!)
-        } catch {
-            print(error)
-        }
+        guard let realm = try? Realm(configuration: self.config) else { return }
+        photos = realm.objects(Photo.self).filter("ownerId == %@", user)
     }
     
     func loadPhotos(for user: Int) {
@@ -141,10 +129,10 @@ class FriendsCollectionController: UICollectionViewController, UICollectionViewD
             if photos.count == 0 {
                 loadPhotosFromVK(for: user)
             } else {
-                self.photos = Array(photos)
+                self.photos = photos
             }
         } catch {
-            print(error)
+            print(error.localizedDescription)
         }
     }
 }

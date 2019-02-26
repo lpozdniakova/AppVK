@@ -11,18 +11,18 @@ import Kingfisher
 
 class AllGroupController: UITableViewController, UISearchBarDelegate {
 
-    @IBOutlet weak var searchBar: UISearchBar! //searchGroups
+    @IBOutlet weak var searchBar: UISearchBar!
 
-    let searchController = UISearchController(searchResultsController: nil)
+    private let searchController = UISearchController(searchResultsController: nil)
     var filteredGroup: [Group] = []
-    var searchActive : Bool = false
+    private var searchActive : Bool = false
+
+    private var offsetX: CGFloat = 0
+    private var offsetY: CGFloat = 0
+    private var textFieldInsideSearchBar: UITextField?
+    private var iconView: UIImageView?
     
-    var offsetX: CGFloat = 0
-    var offsetY: CGFloat = 0
-    var textFieldInsideSearchBar: UITextField?
-    var iconView: UIImageView?
-    
-    let vkService = VKService()
+    private let vkService = VKService()
     
     override func viewDidLoad() {
         super.viewDidLoad()

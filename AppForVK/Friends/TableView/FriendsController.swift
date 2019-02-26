@@ -20,18 +20,18 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     //MARK: - Variables and constants
     
     private let vkService = VKService()
-    private var friends = [User]()
-    //let transitionManager = TransitionManager()
-    let searchController = UISearchController(searchResultsController: nil)
-    var filteredFriend: [User] = []
-    var letters: [Character] = []
-    var lettersDictionary: [Character: [User]] = [:]
-    var searchActive : Bool = false
+    private var friends: Results<User>?
+    private var filteredFriend: Results<User>?
+    private let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
+    private let searchController = UISearchController(searchResultsController: nil)
+    private var letters: [Character] = []
+    private var lettersDictionary: [Character: [User]] = [:]
+    private var searchActive : Bool = false
     
-    var offsetX: CGFloat = 0
-    var offsetY: CGFloat = 0
-    var textFieldInsideSearchBar: UITextField?
-    var iconView: UIImageView?
+    private var offsetX: CGFloat = 0
+    private var offsetY: CGFloat = 0
+    private var textFieldInsideSearchBar: UITextField?
+    private var iconView: UIImageView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,23 +48,24 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
                 print(error.localizedDescription)
                 return
             } else if let friends = friends, let self = self {
-                self.friends = friends
-                self.filteredFriend = friends
+                RealmProvider.save(items: friends)
+                guard let realm = try? Realm(configuration: self.config) else { return }
+                self.friends = realm.objects(User.self)
+                self.filteredFriend = realm.objects(User.self)
                 self.updateFriendsIndex(friends: self.filteredFriend)
                 self.updateFriendsNamesDictionary(friends: self.filteredFriend)
-                self.saveFriends(friends)
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
             }
         }
-        
         tableView.keyboardDismissMode = .onDrag
     }
     
     override func viewWillAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = false
         self.navigationController?.navigationBar.isHidden = false
+        self.navigationController?.navigationBar.barStyle = .default
     }
     
     // MARK: - Table view data source
@@ -91,20 +92,38 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let char = letters[indexPath.section]
         let friendName = lettersDictionary[char]?[indexPath.row].fullName
+        let friendOnlineStatus = lettersDictionary[char]?[indexPath.row].online
         let friendImageUrl = lettersDictionary[char]?[indexPath.row].photo_50
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendsCell
         cell.friendImage.kf.setImage(with: URL(string: friendImageUrl ?? "https://vk.com/images/camera_50.png"))
         cell.friendName.text = friendName
+        
+        cell.friendOnlineStatus.layer.masksToBounds = true
+        if friendOnlineStatus != "offline" {
+            if friendOnlineStatus == "online_mobile" {
+                cell.onlineStatusConstraintWidth.constant = 8
+                cell.onlineStatusConstraintHeight.constant = 12
+            } else {
+                cell.onlineStatusConstraintWidth.constant = 8
+                cell.onlineStatusConstraintHeight.constant = 8
+            }
+            cell.friendOnlineStatus.image = UIImage(named: friendOnlineStatus ?? "offline")
+        } else {
+            cell.onlineStatusConstraintHeight.constant = 0
+            cell.friendOnlineStatus.image = nil
+        }
+        cell.friendImage.layer.masksToBounds = true
         return cell
     }
     
     //MARK: - Setup searchBar
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        filteredFriend = friends.filter({ (friend) -> Bool in FirstLetterSearch.isMatched(searchBase: friend.fullName, searchString: searchText)})
+        guard let realm = try? Realm(configuration: self.config) else { return }
+        let fullName = searchText
+        filteredFriend = realm.objects(User.self).filter("fullName CONTAINS %@", fullName)
         updateFriendsIndex(friends: filteredFriend)
         updateFriendsNamesDictionary(friends: filteredFriend)
-        
         if (searchText.count == 0) {
             updateFriendsIndex(friends: friends)
             updateFriendsNamesDictionary(friends: friends)
@@ -150,29 +169,14 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     
     //MARK: - Prepare data
     
-    func updateFriendsNamesDictionary(friends: [User]) {
-        let sortedFriends = friends.sorted(by: { $0.fullName < $1.fullName })
+    func updateFriendsNamesDictionary(friends: Results<User>?) {
+        let sortedFriends = friends!.sorted(by: { $0.fullName < $1.fullName }) //TODO: - Убрать force-unwrap
         lettersDictionary = SectionIndexManager.getFriendIndexDictionary(array: sortedFriends)
     }
     
-    func updateFriendsIndex(friends: [User]) {
-        letters = SectionIndexManager.getOrderedIndexArray(array: friends)
-    }
-    
-    // MARK: - Realm
-    
-    func saveFriends(_ friends: [User]) {
-        do {
-            let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
-            let realm = try Realm(configuration: config)
-            //let realm = try Realm()
-            realm.beginWrite()
-            realm.add(friends, update: true)
-            try realm.commitWrite()
-            print(realm.configuration.fileURL!)
-        } catch {
-            print(error)
-        }
+    func updateFriendsIndex(friends: Results<User>?) {
+        let arrayFriends = Array(friends!) //TODO: - Убрать force-unwrap
+        letters = SectionIndexManager.getOrderedIndexArray(array: arrayFriends)
     }
     
     // MARK: - Navigation

@@ -23,7 +23,7 @@ class User: Object {
     
     //MARK: - Optional fields
     @objc dynamic var nickname: String = ""
-    @objc dynamic var online: Int = 0
+    @objc dynamic var online = "offline"
     @objc dynamic var photo_50: String = ""
     
     override static func primaryKey() -> String? {
@@ -41,7 +41,11 @@ class User: Object {
         self.canAccessClosed = json["can_access_closed"].intValue
         self.fullName = json["last_name"].stringValue + " " + json["first_name"].stringValue
         self.nickname = json["nickname"].stringValue
-        self.online = json["online"].intValue
+        if json["online"].intValue == 1 {
+            if json["online_mobile"].intValue == 1 { online = "online_mobile" } else { online = "online_pc" }
+        } else {
+            online = "offline"
+        }
         self.photo_50 = json["photo_50"].stringValue
     }
 }
