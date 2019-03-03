@@ -48,8 +48,8 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
                 print(error.localizedDescription)
                 return
             } else if let friends = friends, let self = self {
-                RealmProvider.save(items: friends)
                 guard let realm = try? Realm(configuration: self.config) else { return }
+                RealmProvider.save(items: friends)
                 self.friends = realm.objects(User.self)
                 self.filteredFriend = realm.objects(User.self)
                 self.updateFriendsIndex(friends: self.filteredFriend)
@@ -66,6 +66,7 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
         self.tabBarController?.tabBar.isHidden = false
         self.navigationController?.navigationBar.isHidden = false
         self.navigationController?.navigationBar.barStyle = .default
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
     }
     
     // MARK: - Table view data source

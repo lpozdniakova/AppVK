@@ -45,8 +45,8 @@ class MyGroupController: UITableViewController {
                 print(error.localizedDescription)
                 return
             } else if let groups = groups, let self = self {
-                RealmProvider.save(items: groups)
                 guard let realm = try? Realm(configuration: self.config) else { return }
+                RealmProvider.save(items: groups)
                 self.groups = realm.objects(Group.self)
                 DispatchQueue.main.async {
                     self.tableView.reloadData()

@@ -27,7 +27,7 @@ class VKService {
     func loadVKFriends(for user: Int, completion: (([User]?, Error?) -> Void)? = nil) {
         let path = "/method/friends.get"
         let parameters: Parameters = [
-            "fields": "nickname, domain, online, deactivated, photo_50",
+            "fields": "nickname, domain, online, deactivated, photo_50, sex",
             "access_token": Session.shared.token,
             "v": versionAPI
         ]

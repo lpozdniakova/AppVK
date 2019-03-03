@@ -25,6 +25,7 @@ class User: Object {
     @objc dynamic var nickname: String = ""
     @objc dynamic var online = "offline"
     @objc dynamic var photo_50: String = ""
+    @objc dynamic var sex: Int = 0
     
     override static func primaryKey() -> String? {
         return "id"
@@ -47,5 +48,6 @@ class User: Object {
             online = "offline"
         }
         self.photo_50 = json["photo_50"].stringValue
+        self.sex = json["sex"].intValue
     }
 }
