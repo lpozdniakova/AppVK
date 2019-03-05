@@ -8,37 +8,19 @@
 
 import UIKit
 
-@IBDesignable class ShadowView: UIView {
+class ShadowView: UIView {
     
-    @IBInspectable var cornerRadius: CGFloat = 22 {
+    private var cornerRadius: CGFloat = 18
+    private var shadowColor: UIColor = UIColor.black
+    private var shadowOpacity: Float = 0.5
+    private var shadowRadius: CGFloat = 6.0
+    /*@IBInspectable var shadowRadius: CGFloat = 6 {
         didSet {
             setNeedsDisplay()
         }
-    }
+    }*/
     
-    @IBInspectable var shadowColor: UIColor = UIColor.black {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    @IBInspectable var shadowOpacity: Float = 0.5 {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    @IBInspectable var shadowRadius: CGFloat = 11 {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    @IBInspectable var shadowOffset: CGSize = CGSize.zero {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
+    private var shadowOffset: CGSize = CGSize.zero
     
     override class var layerClass: AnyClass {
         return CAShapeLayer.self

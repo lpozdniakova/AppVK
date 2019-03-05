@@ -8,6 +8,7 @@
 
 import UIKit
 import WebKit
+import RealmSwift
 
 final class LogonFormController: UIViewController {
 
@@ -39,6 +40,26 @@ final class LogonFormController: UIViewController {
         webView.load(request)
     }
     
+    func logoutVK() {
+        let dataStore = WKWebsiteDataStore.default()
+        print("Logout")
+        dataStore.fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { (records) in
+            for record in records {
+                if record.displayName == "vk.com" {
+                    dataStore.removeData(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes(), for: [record], completionHandler: {
+                    })
+                }
+            }
+        }
+        
+        guard let realm = try? Realm() else { return }
+        realm.beginWrite()
+        realm.deleteAll()
+        do {
+            try! realm.commitWrite()
+        }
+    }
+    
 }
 
 extension LogonFormController: WKNavigationDelegate {
@@ -62,6 +83,7 @@ extension LogonFormController: WKNavigationDelegate {
         
         Session.shared.token = token
         Session.shared.userId = userId
+        FirebaseService.shared.userFirestoreId = String(userId)
         
         let vc = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as! MainViewController
         present(vc, animated: true)

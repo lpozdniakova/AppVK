@@ -27,6 +27,7 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     private var letters: [Character] = []
     private var lettersDictionary: [Character: [User]] = [:]
     private var searchActive : Bool = false
+    private var notificationToken: NotificationToken?
     
     private var offsetX: CGFloat = 0
     private var offsetY: CGFloat = 0

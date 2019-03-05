@@ -10,17 +10,8 @@ import UIKit
 
 @IBDesignable class FriendImageView: UIImageView {
     
-    @IBInspectable var cornerRadius: CGFloat = 22 {
-        didSet {
-            self.updateRadius()
-        }
-    }
-    
-    @IBInspectable var masksToBounds: Bool = true {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
+    private var cornerRadius: CGFloat = 18
+    private var masksToBounds: Bool = true
     
     override class var layerClass: AnyClass {
         return CAShapeLayer.self
@@ -33,9 +24,5 @@ import UIKit
     override func layoutSubviews() {
         (layer as! CAShapeLayer).cornerRadius = cornerRadius
         (layer as! CAShapeLayer).masksToBounds = masksToBounds
-    }
-    
-    func updateRadius() {
-        self.layerImage.cornerRadius = cornerRadius
     }
 }

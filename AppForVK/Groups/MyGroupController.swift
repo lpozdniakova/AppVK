@@ -40,19 +40,18 @@ class MyGroupController: UITableViewController {
         self.tableView.rowHeight = 44
         pairTableAndRealm()
         
-        vkService.loadVKGroups(for: Session.shared.userId) { [weak self] groups, error in
+        vkService.loadVKGroups(for: Session.shared.userId) { groups, error in
             if let error = error {
                 print(error.localizedDescription)
                 return
-            } else if let groups = groups, let self = self {
-                guard let realm = try? Realm(configuration: self.config) else { return }
+            } else if let groups = groups {
                 RealmProvider.save(items: groups)
-                self.groups = realm.objects(Group.self)
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
             }
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        notificationToken?.invalidate()
     }
     
     func pairTableAndRealm() {

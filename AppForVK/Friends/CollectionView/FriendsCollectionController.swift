@@ -18,6 +18,7 @@ class FriendsCollectionController: UICollectionViewController, UICollectionViewD
     private var friendsImages: [String] = []
     private var photos: Results<Photo>?
     private let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
+    private var notificationToken: NotificationToken?
     var user: Int = 0
  
     override func viewDidLoad() {
@@ -25,7 +26,32 @@ class FriendsCollectionController: UICollectionViewController, UICollectionViewD
         self.tabBarController?.tabBar.isHidden = true
         self.navigationController?.navigationBar.barStyle = .blackTranslucent
         self.addGestures()
-        loadPhotos(for: user)
+        loadPhotosFromVK(for: user)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        notificationToken = photos?.observe { [weak self] (changes: RealmCollectionChange) in
+            guard let collectionView = self?.collectionView else { return }
+            
+            switch changes {
+            case .initial:
+                collectionView.reloadData()
+            case .update(_, let deletions, let insertions, let modifications):
+                collectionView.performBatchUpdates( {
+                    self?.collectionView.reloadItems(at: modifications.map { IndexPath(row: $0, section: 0) })
+                    self?.collectionView.insertItems(at: insertions.map { IndexPath(row: $0, section: 0) })
+                    self?.collectionView.deleteItems(at: deletions.map { IndexPath(row: $0, section: 0) })
+                }, completion: { (completed: Bool) in self?.collectionView.reloadData() })
+                break
+            case .error(let error):
+                fatalError("\(error)")
+                break
+            }
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        notificationToken?.invalidate()
     }
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -107,32 +133,16 @@ class FriendsCollectionController: UICollectionViewController, UICollectionViewD
     // MARK: - Realm
     
     func loadPhotosFromVK(for user: Int) {
-        vkService.loadVKPhotos(for: user) { [weak self] photos, error in
+        guard let realm = try? Realm(configuration: self.config) else { return }
+        photos = realm.objects(Photo.self).filter("ownerId == %@", user)
+        
+        vkService.loadVKPhotos(for: user) { photos, error in
             if let error = error {
                 print(error.localizedDescription)
                 return
-            } else if let photos = photos, let self = self {
+            } else if let photos = photos {
                 RealmProvider.save(items: photos)
-                DispatchQueue.main.async {
-                    self.collectionView.reloadData()
-                }
             }
-        }
-        guard let realm = try? Realm(configuration: self.config) else { return }
-        photos = realm.objects(Photo.self).filter("ownerId == %@", user)
-    }
-    
-    func loadPhotos(for user: Int) {
-        do {
-            let realm = try Realm()
-            let photos = realm.objects(Photo.self).filter("ownerId == %@", user)
-            if photos.count == 0 {
-                loadPhotosFromVK(for: user)
-            } else {
-                self.photos = photos
-            }
-        } catch {
-            print(error.localizedDescription)
         }
     }
 }

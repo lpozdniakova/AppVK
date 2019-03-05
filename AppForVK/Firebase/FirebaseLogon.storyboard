@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="8GO-RD-gzI">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Firebase Logon View Controller-->
+        <scene sceneID="d2z-kf-qf1">
+            <objects>
+                <viewController id="8GO-RD-gzI" customClass="FirebaseLogonViewController" customModule="AppForVK" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="AXC-Ox-1LK">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Выберите тип авторизации" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5cZ-CT-joq">
+                                <rect key="frame" x="50" y="70" width="275" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YBU-9U-QcQ">
+                                <rect key="frame" x="50" y="211" width="275" height="30"/>
+                                <color key="backgroundColor" red="0.2901960784" green="0.46274509800000002" blue="0.6588235294" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="378-Wj-1Ga"/>
+                                </constraints>
+                                <state key="normal" title="Анонимный вход">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="anonymousAuthButton:" destination="8GO-RD-gzI" eventType="touchUpInside" id="CDW-SU-Xne"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5Wc-pw-32F">
+                                <rect key="frame" x="50" y="266" width="275" height="30"/>
+                                <color key="backgroundColor" red="0.2901960784" green="0.46274509800000002" blue="0.6588235294" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="uoQ-5t-oO6"/>
+                                </constraints>
+                                <state key="normal" title="Авторизация через VK">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="vkAuthButton:" destination="8GO-RD-gzI" eventType="touchUpInside" id="5io-qM-D28"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="5Wc-pw-32F" firstAttribute="leading" secondItem="F6g-Sb-1Q9" secondAttribute="leading" constant="50" id="Esx-74-fbG"/>
+                            <constraint firstItem="F6g-Sb-1Q9" firstAttribute="trailing" secondItem="5cZ-CT-joq" secondAttribute="trailing" constant="50" id="Fel-B5-Zhs"/>
+                            <constraint firstItem="YBU-9U-QcQ" firstAttribute="top" secondItem="5cZ-CT-joq" secondAttribute="bottom" constant="120" id="YoJ-rc-gZb"/>
+                            <constraint firstItem="F6g-Sb-1Q9" firstAttribute="trailing" secondItem="YBU-9U-QcQ" secondAttribute="trailing" constant="50" id="ZOa-kT-ef3"/>
+                            <constraint firstItem="5cZ-CT-joq" firstAttribute="top" secondItem="F6g-Sb-1Q9" secondAttribute="top" constant="50" id="lLM-UM-cwp"/>
+                            <constraint firstItem="5cZ-CT-joq" firstAttribute="leading" secondItem="F6g-Sb-1Q9" secondAttribute="leading" constant="50" id="rWI-iV-l2u"/>
+                            <constraint firstItem="5Wc-pw-32F" firstAttribute="top" secondItem="YBU-9U-QcQ" secondAttribute="bottom" constant="25" id="t9D-w4-3NR"/>
+                            <constraint firstItem="YBU-9U-QcQ" firstAttribute="leading" secondItem="F6g-Sb-1Q9" secondAttribute="leading" constant="50" id="u6r-pg-Om8"/>
+                            <constraint firstItem="F6g-Sb-1Q9" firstAttribute="trailing" secondItem="5Wc-pw-32F" secondAttribute="trailing" constant="50" id="yg5-cM-7Kt"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="F6g-Sb-1Q9"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VfI-Ke-Q31" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-6" y="176"/>
+        </scene>
+    </scenes>
+</document>
