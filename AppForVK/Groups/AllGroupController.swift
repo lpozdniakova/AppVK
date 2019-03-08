@@ -8,7 +8,6 @@
 
 import UIKit
 import Kingfisher
-import FirebaseFirestore
 
 class AllGroupController: UITableViewController, UISearchBarDelegate {
 
@@ -52,8 +51,8 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
                     }
                 }
             }
-            searchActive = true}
-        tableView.reloadData()
+            searchActive = true
+        }
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
@@ -64,7 +63,6 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
-        saveToFirestore(FirebaseService.shared.userFirestoreId)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
@@ -120,20 +118,5 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
         }
         return cell
     }
-    
-    //MARK: - Firestore
-    
-    let database = Firestore.firestore()
-    
-    func saveToFirestore(_ user: String) {
-        database.collection("anonymousUsers")
-            .document(user)
-            .setData([searchBar.text!:Date()], merge: true) { error in
-                if let error = error {
-                    self.show(error)
-                } else {
-                    print("data saved.")
-                }
-        }
-    }
+
 }

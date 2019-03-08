@@ -29,13 +29,10 @@
 		4638BD71220214ED007EF8D8 /* SectionIndexManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638BD70220214ED007EF8D8 /* SectionIndexManager.swift */; };
 		4638BD7322021BD8007EF8D8 /* FirstLetterSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638BD7222021BD8007EF8D8 /* FirstLetterSearch.swift */; };
 		466B9644222D80970052EA69 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 466B9643222D80970052EA69 /* GoogleService-Info.plist */; };
-		466B9646222D8FF80052EA69 /* FirebaseLogon.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 466B9645222D8FF80052EA69 /* FirebaseLogon.storyboard */; };
-		466B964B222D921A0052EA69 /* FirebaseLogonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466B964A222D921A0052EA69 /* FirebaseLogonViewController.swift */; };
 		466B964D222D9A8B0052EA69 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466B964C222D9A8B0052EA69 /* UIViewController+Extensions.swift */; };
 		4677443921DF35DF00D20768 /* NewsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4677443821DF35DF00D20768 /* NewsController.swift */; };
 		46797FCD21E9BD6800CA015F /* ShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46797FCC21E9BD6800CA015F /* ShadowView.swift */; };
 		46797FCF21E9BE3C00CA015F /* FriendImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46797FCE21E9BE3C00CA015F /* FriendImageView.swift */; };
-		469F8011222EBBDD0079C972 /* FirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 469F8010222EBBDD0079C972 /* FirebaseService.swift */; };
 		46D38F7422094ED6006BDF78 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D38F7322094ED6006BDF78 /* Session.swift */; };
 		46D38F76220992D6006BDF78 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D38F75220992D6006BDF78 /* UIColor+Extensions.swift */; };
 		46D38F78220995F6006BDF78 /* News4ImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D38F77220995F6006BDF78 /* News4ImageTableViewCell.swift */; };
@@ -88,13 +85,10 @@
 		4638BD70220214ED007EF8D8 /* SectionIndexManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionIndexManager.swift; sourceTree = "<group>"; };
 		4638BD7222021BD8007EF8D8 /* FirstLetterSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstLetterSearch.swift; sourceTree = "<group>"; };
 		466B9643222D80970052EA69 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		466B9645222D8FF80052EA69 /* FirebaseLogon.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = FirebaseLogon.storyboard; sourceTree = "<group>"; };
-		466B964A222D921A0052EA69 /* FirebaseLogonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseLogonViewController.swift; sourceTree = "<group>"; };
 		466B964C222D9A8B0052EA69 /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		4677443821DF35DF00D20768 /* NewsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsController.swift; sourceTree = "<group>"; };
 		46797FCC21E9BD6800CA015F /* ShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowView.swift; sourceTree = "<group>"; };
 		46797FCE21E9BE3C00CA015F /* FriendImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendImageView.swift; sourceTree = "<group>"; };
-		469F8010222EBBDD0079C972 /* FirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FirebaseService.swift; path = AppForVK/Firebase/FirebaseService.swift; sourceTree = SOURCE_ROOT; };
 		46D38F7322094ED6006BDF78 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		46D38F75220992D6006BDF78 /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
 		46D38F77220995F6006BDF78 /* News4ImageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = News4ImageTableViewCell.swift; sourceTree = "<group>"; };
@@ -180,15 +174,6 @@
 			path = DataBase;
 			sourceTree = "<group>";
 		};
-		466B9649222D91CF0052EA69 /* Firebase */ = {
-			isa = PBXGroup;
-			children = (
-				466B9645222D8FF80052EA69 /* FirebaseLogon.storyboard */,
-				466B964A222D921A0052EA69 /* FirebaseLogonViewController.swift */,
-			);
-			path = Firebase;
-			sourceTree = "<group>";
-		};
 		4677443521DDFA6100D20768 /* News */ = {
 			isa = PBXGroup;
 			children = (
@@ -232,7 +217,6 @@
 			children = (
 				46D38F7E220B0C93006BDF78 /* VKService.swift */,
 				4606E30022203458007FA007 /* RealmProvider.swift */,
-				469F8010222EBBDD0079C972 /* FirebaseService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -321,7 +305,6 @@
 				C4ACB73B21C4E46D00459EB9 /* AppDelegate.swift */,
 				C4FCF23521CA98140045D1DC /* MainViewController.swift */,
 				C4ACB73F21C4E46D00459EB9 /* Logon.storyboard */,
-				466B9649222D91CF0052EA69 /* Firebase */,
 				C4F174C621CA8AC100F65433 /* Main.storyboard */,
 				C4ACB74421C4E47B00459EB9 /* LaunchScreen.storyboard */,
 				C4ACB74221C4E47B00459EB9 /* Assets.xcassets */,
@@ -392,7 +375,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C4ACB74621C4E47B00459EB9 /* LaunchScreen.storyboard in Resources */,
-				466B9646222D8FF80052EA69 /* FirebaseLogon.storyboard in Resources */,
 				C4F174C721CA8AC100F65433 /* Main.storyboard in Resources */,
 				4638BD5F21FECE5A007EF8D8 /* News3ImageTableViewCell.xib in Resources */,
 				46140B8A21FEB96C00967BF6 /* News2ImageTableViewCell.xib in Resources */,
@@ -440,36 +422,20 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AppForVK/Pods-AppForVK-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/BoringSSL-GRPC/openssl_grpc.framework",
-				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
-				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
-				"${BUILT_PRODUCTS_DIR}/gRPC-C++/grpcpp.framework",
-				"${BUILT_PRODUCTS_DIR}/gRPC-Core/grpc.framework",
-				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
-				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/openssl_grpc.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpcpp.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpc.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -487,9 +453,7 @@
 				46140B7D21FEB94C00967BF6 /* NewsLikeControl.swift in Sources */,
 				46140B8921FEB96C00967BF6 /* NewsTableViewCell.swift in Sources */,
 				46D766432203080B00C4B8B0 /* UIView+Extensions.swift in Sources */,
-				469F8011222EBBDD0079C972 /* FirebaseService.swift in Sources */,
 				46140B8621FEB96C00967BF6 /* NewsImageCell.swift in Sources */,
-				466B964B222D921A0052EA69 /* FirebaseLogonViewController.swift in Sources */,
 				4638BD69220180F1007EF8D8 /* CustomPopAnimator.swift in Sources */,
 				C4FCF23621CA98140045D1DC /* MainViewController.swift in Sources */,
 				C41C98CB21CFA4E300451CC4 /* FriendsCell.swift in Sources */,

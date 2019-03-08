@@ -10,8 +10,4 @@ target 'AppForVK' do
   pod 'SwiftyJSON', '~> 4.2'
   pod 'Kingfisher', '~> 5.1'
   pod 'RealmSwift', '~> 3.13'
-  pod 'Firebase/Core'
-  pod 'Firebase/Database'
-  pod 'Firebase/Firestore'
-  pod 'Firebase/Auth'
 end

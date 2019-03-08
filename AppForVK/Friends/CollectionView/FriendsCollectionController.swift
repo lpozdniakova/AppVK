@@ -22,7 +22,7 @@ class FriendsCollectionController: UICollectionViewController, UICollectionViewD
     var user: Int = 0
  
     override func viewDidLoad() {
-        super.viewDidLoad()
+        //super.viewDidLoad()
         self.tabBarController?.tabBar.isHidden = true
         self.navigationController?.navigationBar.barStyle = .blackTranslucent
         self.addGestures()

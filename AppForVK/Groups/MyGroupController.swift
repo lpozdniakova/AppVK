@@ -25,9 +25,9 @@ class MyGroupController: UITableViewController {
                 do {
                     guard let realm = try? Realm(configuration: self.config) else { return }
                     realm.beginWrite()
+                    vkService.joinGroup(for: group.id)
                     realm.add(group, update: true)
                     try realm.commitWrite()
-                    vkService.joinGroup(for: group.id)
                 } catch {
                     print(error.localizedDescription)
                 }
@@ -50,9 +50,9 @@ class MyGroupController: UITableViewController {
         }
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
+    /*override func viewWillDisappear(_ animated: Bool) {
         notificationToken?.invalidate()
-    }
+    }*/
     
     func pairTableAndRealm() {
         guard let realm = try? Realm() else { return }

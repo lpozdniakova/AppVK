@@ -83,7 +83,6 @@ extension LogonFormController: WKNavigationDelegate {
         
         Session.shared.token = token
         Session.shared.userId = userId
-        FirebaseService.shared.userFirestoreId = String(userId)
         
         let vc = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as! MainViewController
         present(vc, animated: true)

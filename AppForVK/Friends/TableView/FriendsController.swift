@@ -21,18 +21,18 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     
     private let vkService = VKService()
     private var friends: Results<User>?
-    private var filteredFriend: Results<User>?
     private let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
     private let searchController = UISearchController(searchResultsController: nil)
     private var letters: [Character] = []
     private var lettersDictionary: [Character: [User]] = [:]
-    private var searchActive : Bool = false
     private var notificationToken: NotificationToken?
     
     private var offsetX: CGFloat = 0
     private var offsetY: CGFloat = 0
     private var textFieldInsideSearchBar: UITextField?
     private var iconView: UIImageView?
+    
+    //MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,22 +44,15 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
         textFieldInsideSearchBar = searchBar.value(forKey: "searchField") as? UITextField
         iconView = textFieldInsideSearchBar?.leftView as? UIImageView
         
-        vkService.loadVKFriends(for: Session.shared.userId) { [weak self] friends, error in
+        vkService.loadVKFriends(for: Session.shared.userId) { friends, error in
             if let error = error {
                 print(error.localizedDescription)
                 return
-            } else if let friends = friends, let self = self {
-                guard let realm = try? Realm(configuration: self.config) else { return }
+            } else if let friends = friends {
                 RealmProvider.save(items: friends)
-                self.friends = realm.objects(User.self)
-                self.filteredFriend = realm.objects(User.self)
-                self.updateFriendsIndex(friends: self.filteredFriend)
-                self.updateFriendsNamesDictionary(friends: self.filteredFriend)
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
             }
         }
+        pairTableAndRealm()
         tableView.keyboardDismissMode = .onDrag
     }
     
@@ -70,6 +63,32 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
     }
     
+    func pairTableAndRealm() {
+        guard let realm = try? Realm() else { return }
+        friends = realm.objects(User.self)
+        self.updateFriendsIndex(friends: self.friends)
+        self.updateFriendsNamesDictionary(friends: self.friends)
+        
+        notificationToken = friends?.observe { [weak self] (changes: RealmCollectionChange) in
+            guard let tableView = self?.tableView, let self = self else { return }
+            
+            switch changes {
+            case .initial:
+                tableView.reloadData()
+                print("Initial")
+            case .update(_, _, _, _):
+                self.updateFriendsIndex(friends: self.friends)
+                self.updateFriendsNamesDictionary(friends: self.friends)
+                tableView.reloadData()
+                print("Update")
+                break
+            case .error(let error):
+                fatalError("\(error)")
+                break
+            }
+        }
+    }
+    
     // MARK: - Table view data source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -77,14 +96,13 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     }
     
     override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-        guard !searchActive else { return nil }
         return letters.map { String($0) }
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return String(letters[section])
     }
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let char = letters[section]
         let rowsCount: Int = lettersDictionary[char]?.count ?? 0
@@ -123,20 +141,24 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard let realm = try? Realm(configuration: self.config) else { return }
         let fullName = searchText
-        filteredFriend = realm.objects(User.self).filter("fullName CONTAINS %@", fullName)
-        updateFriendsIndex(friends: filteredFriend)
-        updateFriendsNamesDictionary(friends: filteredFriend)
+        friends = realm.objects(User.self).filter("fullName CONTAINS %@", fullName)
+        updateFriendsIndex(friends: friends)
+        updateFriendsNamesDictionary(friends: friends)
         if (searchText.count == 0) {
+            friends = realm.objects(User.self)
             updateFriendsIndex(friends: friends)
             updateFriendsNamesDictionary(friends: friends)
-            searchActive = false
+            UIView.transition(with: searchBar, duration: 0.5, options: .transitionCrossDissolve, animations: {self.searchBar.setShowsCancelButton(false, animated: true)})
+            searchBar.setPositionAdjustment(UIOffset(horizontal: offsetX, vertical: offsetY), for: .search)
+            searchBar.resignFirstResponder()
+            searchBar.text = nil
+            searchBar.endEditing(true)
             hideKeyboard()
         }
         tableView.reloadData()
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        searchActive = true
         UIView.transition(with: searchBar, duration: 0.5, options: .transitionCrossDissolve, animations: {self.searchBar.setShowsCancelButton(true, animated: true)})
         self.searchBar.setPositionAdjustment(UIOffset(horizontal: 0, vertical: 0), for: .search)
         UIView.animate(withDuration: 1, delay: 0.5, usingSpringWithDamping: 0.3, initialSpringVelocity: 0.3, options: .curveEaseInOut, animations: {self.iconView?.transform = CGAffineTransform(translationX: -20, y: 0)}) { (true) in self.iconView?.transform = .identity}
@@ -152,9 +174,10 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
         searchBar.resignFirstResponder()
         searchBar.text = nil
         searchBar.endEditing(true)
+        guard let realm = try? Realm(configuration: self.config) else { return }
+        friends = realm.objects(User.self)
         updateFriendsIndex(friends: friends)
         updateFriendsNamesDictionary(friends: friends)
-        searchActive = false
         hideKeyboard()
         tableView.reloadData()
     }
@@ -165,19 +188,20 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     }
     
     @objc func hideKeyboard() {
-        searchActive = false
         friendTableView?.endEditing(true)
     }
     
     //MARK: - Prepare data
     
     func updateFriendsNamesDictionary(friends: Results<User>?) {
-        let sortedFriends = friends!.sorted(by: { $0.fullName < $1.fullName }) //TODO: - Убрать force-unwrap
+        guard let friends = friends else { return }
+        let sortedFriends = friends.sorted(by: { $0.fullName < $1.fullName })
         lettersDictionary = SectionIndexManager.getFriendIndexDictionary(array: sortedFriends)
     }
     
     func updateFriendsIndex(friends: Results<User>?) {
-        let arrayFriends = Array(friends!) //TODO: - Убрать force-unwrap
+        guard let friends = friends else { return }
+        let arrayFriends = Array(friends)
         letters = SectionIndexManager.getOrderedIndexArray(array: arrayFriends)
     }
     
