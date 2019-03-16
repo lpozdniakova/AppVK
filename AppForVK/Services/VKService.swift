@@ -142,4 +142,48 @@ class VKService {
         
         VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON
     }
+    
+    func loadVKNewsFeed(completion: (([News]?, Error?) -> Void)? = nil) {
+        let path = "/method/newsfeed.get"
+        let parameters: Parameters = [
+            "filters": "post",
+            "access_token": Session.shared.token,
+            "v": versionAPI
+        ]
+        let url = baseUrl + path
+        
+        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON { response in
+            switch response.result {
+            case .success(let value):
+                let json = JSON(value)
+                let news = json["response"]["items"].arrayValue.map { News(json: $0) }
+                print(news)
+                let newsProfiles = json["response"]["profiles"].arrayValue.map { News(jsonTitlePostPhotoAndLabelUser: $0) }
+                let newsGroups = json["response"]["groups"].arrayValue.map { News(jsonTitlePostPhotoAndLabelGroup: $0) }
+                
+                for i in 0..<news.count {
+                    if news[i].postSource_id < 0 {
+                        for ii in 0..<newsGroups.count {
+                            if news[i].postSource_id * -1 == newsGroups[ii].titlePostId {
+                                news[i].titlePostId = newsGroups[ii].titlePostId
+                                news[i].titlePostLabel = newsGroups[ii].titlePostLabel
+                                news[i].titlePostPhoto = newsGroups[ii].titlePostPhoto
+                            }
+                        }
+                    } else {
+                        for iii in 0..<newsProfiles.count {
+                            if news[i].postSource_id == newsProfiles[iii].titlePostId {
+                                news[i].titlePostId = newsProfiles[iii].titlePostId
+                                news[i].titlePostLabel = newsProfiles[iii].titlePostLabel
+                                news[i].titlePostPhoto = newsProfiles[iii].titlePostPhoto
+                            }
+                        }
+                    }
+                }
+                completion?(news, nil)
+            case .failure(let error):
+                completion?(nil, error)
+            }
+        }
+    }
 }

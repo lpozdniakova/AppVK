@@ -7,91 +7,68 @@
 //
 
 import UIKit
+import RealmSwift
 
 class NewsController: UITableViewController {
     
-    var arrayNews: [News] = []
+    private let vkService = VKService()
+    private let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
+    private var news: Results<News>?
+    private var notificationToken: NotificationToken?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.register(UINib(nibName: "NewsTableViewCell", bundle: nil), forCellReuseIdentifier: "NewsTableViewCell")
-        tableView.register(UINib(nibName: "News2ImageTableViewCell", bundle: nil), forCellReuseIdentifier: "News2ImageCell")
-        tableView.register(UINib(nibName: "News3ImageTableViewCell", bundle: nil), forCellReuseIdentifier: "News3ImageCell")
-        tableView.register(UINib(nibName: "News4ImageTableViewCell", bundle: nil), forCellReuseIdentifier: "News4ImageCell")
-        arrayNews = [news1, news2, news3, news4]
-    }
-
-    // MARK: - Table view data source
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return arrayNews.count
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var newsCell = UITableViewCell()
-        let news = arrayNews[indexPath.row]
-        if let picturesCount = arrayNews[indexPath.row].picturesArray?.count {
-            if (picturesCount == 2) {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "News2ImageCell", for: indexPath) as! News2ImageTableViewCell
-                setNewsAttributes2Image(news: news, cellToDisplay: cell, indexPath: indexPath)
-                newsCell = cell
-            } else if (picturesCount == 3) {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "News3ImageCell", for: indexPath) as! News3ImageTableViewCell
-                setNewsAttributes3Image(news: news, cellToDisplay: cell, indexPath: indexPath)
-                newsCell = cell
-            } else if (picturesCount == 4) {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "News4ImageCell", for: indexPath) as! News4ImageTableViewCell
-                setNewsAttributes4Image(news: news, cellToDisplay: cell, indexPath: indexPath)
-                newsCell = cell
-            } else {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "NewsTableViewCell", for: indexPath) as! NewsTableViewCell
-                setNewsAttributes(news: news, cellToDisplay: cell, indexPath: indexPath)
-                newsCell = cell
+        self.tableView.rowHeight = 250
+        pairTableAndRealm()
+        
+        vkService.loadVKNewsFeed() { news, error in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            } else if let news = news {
+                RealmProvider.save(items: news)
             }
         }
-        return newsCell
-    }
         
-    func setNewsAttributes(news: News, cellToDisplay: NewsTableViewCell, indexPath: IndexPath) {
-        cellToDisplay.newsText.text = arrayNews[indexPath.row].newsText
-        cellToDisplay.arrayNewsImage = arrayNews[indexPath.row].picturesArray ?? []
-        cellToDisplay.tapLike.updateCount(likes: arrayNews[indexPath.row].likesCount)
-        cellToDisplay.tapShare.updateCount(share: arrayNews[indexPath.row].sharesCount)
-        cellToDisplay.tapComment.updateCount(comment: arrayNews[indexPath.row].commentsCount)
-        cellToDisplay.tapCount.updateCount(views: arrayNews[indexPath.row].viewsCount)
     }
     
-    func setNewsAttributes2Image(news: News, cellToDisplay: News2ImageTableViewCell, indexPath: IndexPath) {
-        cellToDisplay.newsText.text = arrayNews[indexPath.row].newsText
-        cellToDisplay.newsTopImage.image = UIImage(named: arrayNews[indexPath.row].picturesArray![0])
-        cellToDisplay.newsBottomImage.image = UIImage(named: arrayNews[indexPath.row].picturesArray![1])
-        cellToDisplay.tapLike.updateCount(likes: arrayNews[indexPath.row].likesCount)
-        cellToDisplay.tapShare.updateCount(share: arrayNews[indexPath.row].sharesCount)
-        cellToDisplay.tapComment.updateCount(comment: arrayNews[indexPath.row].commentsCount)
-        cellToDisplay.tapCount.updateCount(views: arrayNews[indexPath.row].viewsCount)
+    func pairTableAndRealm() {
+        guard let realm = try? Realm() else { return }
+        news = realm.objects(News.self)
+        
+        notificationToken = news?.observe { [weak self] (changes: RealmCollectionChange) in
+            guard let tableView = self?.tableView else { return }
+            
+            switch changes {
+            case .initial:
+                tableView.reloadData()
+            case .update(_, let deletions, let insertions, let modifications):
+                tableView.beginUpdates()
+                tableView.insertRows(at: insertions.map({ IndexPath(row: $0, section: 0) }), with: .none)
+                tableView.deleteRows(at: deletions.map({ IndexPath(row: $0, section: 0) }), with: .none)
+                tableView.reloadRows(at: modifications.map({ IndexPath(row: $0, section: 0) }), with: .none)
+                tableView.endUpdates()
+                break
+            case .error(let error):
+                fatalError("\(error)")
+                break
+            }
+        }
     }
     
-    func setNewsAttributes3Image(news: News, cellToDisplay: News3ImageTableViewCell, indexPath: IndexPath) {
-        cellToDisplay.newsText.text = arrayNews[indexPath.row].newsText
-        cellToDisplay.newsTopLeftImage.image = UIImage(named: arrayNews[indexPath.row].picturesArray![0])
-        cellToDisplay.newsTopRightImage.image = UIImage(named: arrayNews[indexPath.row].picturesArray![1])
-        cellToDisplay.newsBottomImage.image = UIImage(named: arrayNews[indexPath.row].picturesArray![2])
-        cellToDisplay.tapLike.updateCount(likes: arrayNews[indexPath.row].likesCount)
-        cellToDisplay.tapShare.updateCount(share: arrayNews[indexPath.row].sharesCount)
-        cellToDisplay.tapComment.updateCount(comment: arrayNews[indexPath.row].commentsCount)
-        cellToDisplay.tapCount.updateCount(views: arrayNews[indexPath.row].viewsCount)
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
     }
     
-    func setNewsAttributes4Image(news: News, cellToDisplay: News4ImageTableViewCell, indexPath: IndexPath) {
-        cellToDisplay.newsText.text = arrayNews[indexPath.row].newsText
-        cellToDisplay.newsTopLeftImage.image = UIImage(named: arrayNews[indexPath.row].picturesArray![0])
-        cellToDisplay.newsTopRightImage.image = UIImage(named: arrayNews[indexPath.row].picturesArray![1])
-        cellToDisplay.newsBottomLeftImage.image = UIImage(named: arrayNews[indexPath.row].picturesArray![2])
-        cellToDisplay.newsBottomRightImage.image = UIImage(named: arrayNews[indexPath.row].picturesArray![3])
-        cellToDisplay.tapLike.updateCount(likes: arrayNews[indexPath.row].likesCount)
-        cellToDisplay.tapShare.updateCount(share: arrayNews[indexPath.row].sharesCount)
-        cellToDisplay.tapComment.updateCount(comment: arrayNews[indexPath.row].commentsCount)
-        cellToDisplay.tapCount.updateCount(views: arrayNews[indexPath.row].viewsCount)
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return news?.count ?? 0
     }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "newsPostTableViewCell", for: indexPath) as? NewsPostTableViewCell else { return UITableViewCell() }
+        cell.configure(with: news![indexPath.row]) //TODO: - Убрать force-unwrap
+        return cell
+    }
+    
 
 }

@@ -17,39 +17,26 @@
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="czg-pf-oGD">
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
                         <segue destination="2tx-sE-FTS" kind="relationship" relationship="viewControllers" id="i8a-8D-HV1"/>
                         <segue destination="tSk-Ah-JcD" kind="relationship" relationship="viewControllers" id="EPE-q3-9lv"/>
-                        <segue destination="LEr-n0-2Km" kind="relationship" relationship="viewControllers" id="65c-em-zjy"/>
+                        <segue destination="q2Z-DH-HMe" kind="relationship" relationship="viewControllers" id="CEv-0n-dg7"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xLw-Nw-sKf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-135.19999999999999" y="-928.78560719640188"/>
         </scene>
-        <!--Новости-->
-        <scene sceneID="NRo-hi-P4e">
+        <!--NewsFeed-->
+        <scene sceneID="Ste-Pi-1MA">
             <objects>
-                <tableViewController id="LEr-n0-2Km" customClass="NewsController" customModule="AppForVK" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="1pX-Mi-3mo">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <connections>
-                            <outlet property="dataSource" destination="LEr-n0-2Km" id="Nel-s5-hJg"/>
-                            <outlet property="delegate" destination="LEr-n0-2Km" id="zkD-Ep-bCv"/>
-                        </connections>
-                    </tableView>
-                    <tabBarItem key="tabBarItem" title="Новости" image="News" id="qN9-qs-vUE"/>
-                    <connections>
-                        <outlet property="tableView" destination="1pX-Mi-3mo" id="ZWr-ms-ZDA"/>
-                    </connections>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="XfP-w8-eea" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewControllerPlaceholder storyboardName="NewsFeed" id="q2Z-DH-HMe" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="kqT-ng-V58"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="anB-x8-8Hp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="756" y="-2058.6206896551726"/>
+            <point key="canvasLocation" x="756" y="-929"/>
         </scene>
         <!--Друзья-->
         <scene sceneID="Z2g-kh-xT6">
@@ -373,7 +360,6 @@
     <resources>
         <image name="Friend" width="12" height="12"/>
         <image name="Group" width="12" height="12"/>
-        <image name="News" width="12" height="12"/>
         <image name="appleIcon" width="512" height="512"/>
         <image name="online" width="10" height="10"/>
     </resources>
