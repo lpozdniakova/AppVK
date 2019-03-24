@@ -12,7 +12,7 @@
         <!--Main View Controller-->
         <scene sceneID="ZYr-Id-24Z">
             <objects>
-                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="xlY-o0-j04" customClass="MainViewController" customModule="AppForVK" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="MainViewController" automaticallyAdjustsScrollViewInsets="NO" id="xlY-o0-j04" customClass="MainViewController" customModule="AppForVK" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="czg-pf-oGD">
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>

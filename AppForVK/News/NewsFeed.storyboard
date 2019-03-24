@@ -179,7 +179,13 @@
                             <outlet property="delegate" destination="5kR-Ke-Mh1" id="opY-5d-nc1"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Новости" id="gCT-H7-WU6"/>
+                    <navigationItem key="navigationItem" title="Новости" id="gCT-H7-WU6">
+                        <barButtonItem key="leftBarButtonItem" systemItem="refresh" id="i0n-YS-l2d">
+                            <connections>
+                                <action selector="tapRefreshButton:" destination="5kR-Ke-Mh1" id="LF4-GR-lqg"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GxB-VH-P51" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -11,6 +11,7 @@ import SwiftyJSON
 import RealmSwift
 
 class News: Object {
+    @objc dynamic var newsType = ""
     @objc dynamic var titlePostId = 0
     @objc dynamic var titlePostPhoto = ""
     @objc dynamic var titlePostLabel = ""
@@ -24,6 +25,8 @@ class News: Object {
     @objc dynamic var attachments_photoSize = ""
     @objc dynamic var post_id = 0
     
+    @objc dynamic var postImage = ""
+    
     @objc dynamic var commentsCount = 0
     @objc dynamic var likesCount = 0
     @objc dynamic var commentCanPost = 0
@@ -32,8 +35,13 @@ class News: Object {
     @objc dynamic var repostsCount = 0
     @objc dynamic var viewsCount = 0
     
+    override static func primaryKey() -> String? {
+        return "titlePostId"
+    }
+    
     convenience init(json: JSON) {
         self.init()
+        self.newsType = json["type"].stringValue
         self.postSource_id = json["source_id"].intValue
         self.postText = json["text"].stringValue
         self.titlePostTime = json["date"].doubleValue
@@ -42,6 +50,8 @@ class News: Object {
         if !json["attachments"][0]["width"].stringValue.isEmpty {
             attachments_photoSize = json["attachments"][0]["photo"]["width"].stringValue + "x" + json["attachments"][0]["photo"]["height"].stringValue
         }
+        
+        self.postImage = json["photos"][0]["src"].stringValue
         
         self.post_id = json["post_id"].intValue
         self.geoCoordinates = json["geo"]["coordinates"].stringValue
@@ -53,20 +63,6 @@ class News: Object {
         self.userLikes = json["likes"]["user_likes"].intValue
         self.repostsCount = json["reposts"]["count"].intValue
         self.viewsCount = json["views"]["count"].intValue
-    }
-    
-    convenience init(jsonTitlePostPhotoAndLabelUser json: JSON) {
-        self.init()
-        self.titlePostId = json["id"].intValue
-        self.titlePostPhoto = json["photo_50"].stringValue
-        self.titlePostLabel = json["first_name"].stringValue + " " + json["last_name"].stringValue
-    }
-    
-    convenience init(jsonTitlePostPhotoAndLabelGroup json: JSON) {
-        self.init()
-        self.titlePostId = json["id"].intValue
-        self.titlePostLabel = json["name"].stringValue
-        self.titlePostPhoto = json["photo_50"].stringValue
     }
     
 }

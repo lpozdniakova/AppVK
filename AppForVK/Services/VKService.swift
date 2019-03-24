@@ -33,7 +33,7 @@ class VKService {
         ]
         let url = baseUrl + path
         
-        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON { response in
+        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON(queue: .global(qos: .userInteractive)) { response in
             switch response.result {
             case .success(let value):
                 let json = JSON(value)
@@ -62,7 +62,7 @@ class VKService {
         ]
         let url = baseUrl + path
         
-        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON { response in
+        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON(queue: .global(qos: .userInteractive)) { response in
             switch response.result {
             case .success(let value):
                 let json = JSON(value)
@@ -84,7 +84,7 @@ class VKService {
         ]
         let url = baseUrl + path
         
-        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON { response in
+        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON(queue: .global(qos: .userInteractive)) { response in
             switch response.result {
             case .success(let value):
                 let json = JSON(value)
@@ -107,7 +107,7 @@ class VKService {
         ]
         let url = baseUrl + path
         
-        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON { response in
+        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON(queue: .global(qos: .userInteractive)) { response in
             switch response.result {
             case .success(let value):
                 let json = JSON(value)
@@ -128,7 +128,7 @@ class VKService {
         ]
         let url = baseUrl + path
         
-        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON
+        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON(queue: .global(qos: .userInteractive)) { response in }
     }
     
     func joinGroup(for group: Int) {
@@ -140,42 +140,42 @@ class VKService {
         ]
         let url = baseUrl + path
         
-        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON
+        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON(queue: .global(qos: .userInteractive)) { response in }
     }
     
     func loadVKNewsFeed(completion: (([News]?, Error?) -> Void)? = nil) {
         let path = "/method/newsfeed.get"
         let parameters: Parameters = [
-            "filters": "post",
+            "filters": "post,photo",
+            "count": 30,
             "access_token": Session.shared.token,
             "v": versionAPI
         ]
         let url = baseUrl + path
         
-        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON { response in
+        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON(queue: .global(qos: .userInteractive)) { response in
             switch response.result {
             case .success(let value):
                 let json = JSON(value)
                 let news = json["response"]["items"].arrayValue.map { News(json: $0) }
-                print(news)
-                let newsProfiles = json["response"]["profiles"].arrayValue.map { News(jsonTitlePostPhotoAndLabelUser: $0) }
-                let newsGroups = json["response"]["groups"].arrayValue.map { News(jsonTitlePostPhotoAndLabelGroup: $0) }
+                let newsProfiles = json["response"]["profiles"].arrayValue.map { User(json: $0) }
+                let newsGroups = json["response"]["groups"].arrayValue.map { Group(json: $0) }
                 
                 for i in 0..<news.count {
                     if news[i].postSource_id < 0 {
                         for ii in 0..<newsGroups.count {
-                            if news[i].postSource_id * -1 == newsGroups[ii].titlePostId {
-                                news[i].titlePostId = newsGroups[ii].titlePostId
-                                news[i].titlePostLabel = newsGroups[ii].titlePostLabel
-                                news[i].titlePostPhoto = newsGroups[ii].titlePostPhoto
+                            if news[i].postSource_id * -1 == newsGroups[ii].id {
+                                news[i].titlePostId = newsGroups[ii].id
+                                news[i].titlePostLabel = newsGroups[ii].name
+                                news[i].titlePostPhoto = newsGroups[ii].photo_50
                             }
                         }
                     } else {
                         for iii in 0..<newsProfiles.count {
-                            if news[i].postSource_id == newsProfiles[iii].titlePostId {
-                                news[i].titlePostId = newsProfiles[iii].titlePostId
-                                news[i].titlePostLabel = newsProfiles[iii].titlePostLabel
-                                news[i].titlePostPhoto = newsProfiles[iii].titlePostPhoto
+                            if news[i].postSource_id == newsProfiles[iii].id {
+                                news[i].titlePostId = newsProfiles[iii].id
+                                news[i].titlePostLabel = newsProfiles[iii].fullName
+                                news[i].titlePostPhoto = newsProfiles[iii].photo_50
                             }
                         }
                     }
@@ -185,5 +185,31 @@ class VKService {
                 completion?(nil, error)
             }
         }
+    }
+    
+    enum likeAction: String {
+        case addLike = "/method/likes.add"
+        case deleteLike = "/method/likes.delete"
+    }
+    
+    enum likeType: String {
+        case post = "post"
+    }
+    
+    func addOrDeleteLike(likeType: likeType, owner_id: Int, item_id: Int, action: likeAction) {
+        let path = action.rawValue
+        
+        let parameters: Parameters = [
+            "type": likeType.rawValue,
+            "owner_id": owner_id,
+            "item_id": item_id,
+            "access_token": Session.shared.token,
+            "v": versionAPI
+        ]
+        
+        let url = baseUrl + path
+        
+        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON(queue: .global(qos: .userInteractive)) { response in }
+            
     }
 }

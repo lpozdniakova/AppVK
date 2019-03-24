@@ -65,10 +65,57 @@ class NewsController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "newsPostTableViewCell", for: indexPath) as? NewsPostTableViewCell else { return UITableViewCell() }
+        var identifier = "newsPostTableViewCell"
+        if news![indexPath.row].newsType == "post" {
+            identifier = "newsPostTableViewCell"
+        } else {
+            identifier = "NewsPhotoCell"
+        }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as? NewsPostTableViewCell else { return UITableViewCell() }
         cell.configure(with: news![indexPath.row]) //TODO: - Убрать force-unwrap
+        cell.delegateButton = self
+        cell.indexPathCell = indexPath
         return cell
     }
-    
 
+    @IBAction func tapRefreshButton(_ sender: Any) {
+        vkService.loadVKNewsFeed() { [weak self] news, error in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            } else if let news = news {
+                RealmProvider.save(items: news)
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData()
+                }
+            }
+        }
+    }
+}
+
+extension NewsController: CellForButtonsDelegate {
+    
+    func didTapCompleteButton(indexPath: IndexPath) {
+        if news![indexPath.row].userLikes == 0 {
+            vkService.addOrDeleteLike(likeType: .post, owner_id: news![indexPath.row].postSource_id, item_id: news![indexPath.row].post_id , action: .addLike)
+            do {
+                guard let realm = try? Realm(configuration: self.config) else { return }
+                realm.beginWrite()
+                news![indexPath.row].userLikes = 1
+                try realm.commitWrite()
+            } catch {
+                print(error.localizedDescription)
+            }
+        } else {
+            vkService.addOrDeleteLike(likeType: .post, owner_id: news![indexPath.row].postSource_id, item_id: news![indexPath.row].post_id , action: .deleteLike)
+            do {
+                guard let realm = try? Realm(configuration: self.config) else { return }
+                realm.beginWrite()
+                news![indexPath.row].userLikes = 0
+                try realm.commitWrite()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
 }

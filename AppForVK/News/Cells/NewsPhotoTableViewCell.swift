@@ -1,8 +1,8 @@
 //
-//  NewsPostTableViewCell.swift
+//  NewsPhotoTableViewCell.swift
 //  AppForVK
 //
-//  Created by Mikhail Semerikov on 16/03/2019.
+//  Created by Mikhail Semerikov on 24/03/2019.
 //  Copyright © 2019 Семериков Михаил. All rights reserved.
 //
 
@@ -10,16 +10,12 @@ import UIKit
 import Kingfisher
 import RealmSwift
 
-protocol CellForButtonsDelegate {
-    func didTapCompleteButton(indexPath: IndexPath)
-}
-
-class NewsPostTableViewCell: UITableViewCell {
+class NewsPhotoTableViewCell: UITableViewCell {
     
     @IBOutlet weak var userImage: UIImageView!
     @IBOutlet weak var userName: UILabel!
     @IBOutlet weak var newsDate: UILabel!
-    @IBOutlet weak var newsText: UILabel!
+    @IBOutlet weak var newsImage: UIImageView!
     @IBOutlet weak var likeButton: UIButton!
     @IBOutlet weak var likeLabel: UILabel!
     @IBOutlet weak var commentLeadingConstraint: NSLayoutConstraint!
@@ -47,10 +43,11 @@ class NewsPostTableViewCell: UITableViewCell {
     
     public func configure(with news: News) {
         let urlUserImage = news.titlePostPhoto
+        let urlNewsImage = news.postImage
         userImage.kf.setImage(with: URL(string: urlUserImage))
         userName.text = news.titlePostLabel
         newsDate.text = Date(timeIntervalSince1970: news.titlePostTime).timeAgo(numericDates: false)
-        newsText.text = news.postText
+        newsImage.kf.setImage(with: URL(string: urlNewsImage))
         
         if news.userLikes == 1 {
             likeButton.setImage(UIImage(named: "Heart"), for: .normal)
@@ -77,7 +74,7 @@ class NewsPostTableViewCell: UITableViewCell {
         viewsLabel.text = String(news.viewsCount)
         
     }
-
+    
     @IBAction func tapLikeButton(_ sender: UIButton) {
         delegateButton?.didTapCompleteButton(indexPath: indexPathCell!)
         
@@ -100,4 +97,5 @@ class NewsPostTableViewCell: UITableViewCell {
             }
         }
     }
+    
 }
