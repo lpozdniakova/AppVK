@@ -154,6 +154,7 @@ class VKService {
         let url = baseUrl + path
         
         VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON(queue: .global(qos: .userInteractive)) { response in
+            print(VKService.sharedManager.request(url, method: .get, parameters: parameters))
             switch response.result {
             case .success(let value):
                 let json = JSON(value)

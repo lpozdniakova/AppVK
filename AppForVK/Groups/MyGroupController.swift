@@ -55,6 +55,7 @@ class MyGroupController: UITableViewController {
     }*/
     
     func pairTableAndRealm() {
+        //let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
         guard let realm = try? Realm() else { return }
         groups = realm.objects(Group.self)
         

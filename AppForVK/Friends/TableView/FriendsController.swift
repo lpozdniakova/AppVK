@@ -64,6 +64,7 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     }
     
     func pairTableAndRealm() {
+        //let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
         guard let realm = try? Realm() else { return }
         friends = realm.objects(User.self)
         self.updateFriendsIndex(friends: self.friends)

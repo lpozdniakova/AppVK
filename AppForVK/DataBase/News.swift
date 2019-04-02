@@ -22,7 +22,9 @@ class News: Object {
     @objc dynamic var postSource_id = 0
     @objc dynamic var postText = ""
     @objc dynamic var attachments_typePhoto: String = ""
-    @objc dynamic var attachments_photoSize = ""
+    @objc dynamic var attachmentsType = ""
+    @objc dynamic var attachments_photoWidth = 0
+    @objc dynamic var attachments_photoHeight = 0
     @objc dynamic var post_id = 0
     
     @objc dynamic var postImage = ""
@@ -36,7 +38,7 @@ class News: Object {
     @objc dynamic var viewsCount = 0
     
     override static func primaryKey() -> String? {
-        return "titlePostId"
+        return "post_id"
     }
     
     convenience init(json: JSON) {
@@ -45,11 +47,47 @@ class News: Object {
         self.postSource_id = json["source_id"].intValue
         self.postText = json["text"].stringValue
         self.titlePostTime = json["date"].doubleValue
+        self.attachmentsType = json["attachments"][0]["type"].stringValue
         
-        self.attachments_typePhoto = json["attachments"][0]["photo"]["photo_604"].stringValue
-        if !json["attachments"][0]["width"].stringValue.isEmpty {
-            attachments_photoSize = json["attachments"][0]["photo"]["width"].stringValue + "x" + json["attachments"][0]["photo"]["height"].stringValue
+        let typeAttachments = json["attachments"][0]["type"]
+        switch typeAttachments {
+        case "photo":
+            self.attachments_typePhoto = json["attachments"][0]["photo"]["sizes"][6]["url"].stringValue
+            self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][6]["width"].intValue
+            self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][6]["height"].intValue
+        case "link":
+            self.attachments_typePhoto = json["attachments"][0]["link"]["photo"]["sizes"][0]["url"].stringValue
+            self.attachments_photoWidth = json["attachments"][0]["link"]["photo"]["sizes"][0]["width"].intValue
+            self.attachments_photoHeight = json["attachments"][0]["link"]["photo"]["sizes"][0]["height"].intValue
+        case "video":
+            self.attachments_typePhoto = json["attachments"][0]["video"]["photo_800"].stringValue
+            self.attachments_photoWidth = json["attachments"][0]["video"]["width"].intValue
+            self.attachments_photoHeight = json["attachments"][0]["video"]["height"].intValue
+        case "wall_photo":
+            self.attachments_typePhoto = json["attachments"][0]["photo"]["sizes"][3]["url"].stringValue
+            self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][3]["width"].intValue
+            self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][3]["height"].intValue
+        default:
+            print("Another type of attachments")
         }
+        
+        /*if  typeAttachments == "photo" {
+            self.attachments_typePhoto = json["attachments"][0]["photo"]["sizes"][6]["url"].stringValue
+            self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][6]["width"].intValue
+            self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][6]["height"].intValue
+        } else if typeAttachments == "link" {
+            self.attachments_typePhoto = json["attachments"][0]["link"]["photo"]["sizes"][0]["url"].stringValue
+            self.attachments_photoWidth = json["attachments"][0]["link"]["photo"]["sizes"][0]["width"].intValue
+            self.attachments_photoHeight = json["attachments"][0]["link"]["photo"]["sizes"][0]["height"].intValue
+        } else if typeAttachments == "video" {
+            self.attachments_typePhoto = json["attachments"][0]["video"]["photo_800"].stringValue
+            self.attachments_photoWidth = json["attachments"][0]["video"]["width"].intValue
+            self.attachments_photoHeight = json["attachments"][0]["video"]["height"].intValue
+        } else if typeAttachments == "wall_photo" {
+            self.attachments_typePhoto = json["attachments"][0]["photo"]["sizes"][3]["url"].stringValue
+            self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][3]["width"].intValue
+            self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][3]["height"].intValue
+        }*/
         
         self.postImage = json["photos"][0]["src"].stringValue
         

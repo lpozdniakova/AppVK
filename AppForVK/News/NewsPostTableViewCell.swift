@@ -31,6 +31,7 @@ class NewsPostTableViewCell: UITableViewCell {
     @IBOutlet weak var shareLabel: UILabel!
     @IBOutlet weak var iconViews: UIImageView!
     @IBOutlet weak var viewsLabel: UILabel!
+    @IBOutlet weak var newsImage: UIImageView!
     
     private let vkService = VKService()
     private var news: Results<News>?
@@ -51,6 +52,8 @@ class NewsPostTableViewCell: UITableViewCell {
         userName.text = news.titlePostLabel
         newsDate.text = Date(timeIntervalSince1970: news.titlePostTime).timeAgo(numericDates: false)
         newsText.text = news.postText
+        let imageURL = news.attachments_typePhoto
+        newsImage.kf.setImage(with: URL(string: imageURL))
         
         if news.userLikes == 1 {
             likeButton.setImage(UIImage(named: "Heart"), for: .normal)
