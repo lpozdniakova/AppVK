@@ -143,10 +143,11 @@ class VKService {
         VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON(queue: .global(qos: .userInteractive)) { response in }
     }
     
-    func loadVKNewsFeed(completion: (([News]?, Error?) -> Void)? = nil) {
+    func loadVKNewsFeed(startFrom: String, completion: (([News]?, [Owner]?, [Owner]?, String?, Error?) -> Void)? = nil) {
         let path = "/method/newsfeed.get"
         let parameters: Parameters = [
             "filters": "post,photo",
+            "start_from": startFrom,
             "count": 30,
             "access_token": Session.shared.token,
             "v": versionAPI
@@ -158,32 +159,29 @@ class VKService {
             switch response.result {
             case .success(let value):
                 let json = JSON(value)
-                let news = json["response"]["items"].arrayValue.map { News(json: $0) }
-                let newsProfiles = json["response"]["profiles"].arrayValue.map { User(json: $0) }
-                let newsGroups = json["response"]["groups"].arrayValue.map { Group(json: $0) }
+                var news = [News]()
+                var users = [Owner]()
+                var groups = [Owner]()
+                var nextFrom = ""
                 
-                for i in 0..<news.count {
-                    if news[i].postSource_id < 0 {
-                        for ii in 0..<newsGroups.count {
-                            if news[i].postSource_id * -1 == newsGroups[ii].id {
-                                news[i].titlePostId = newsGroups[ii].id
-                                news[i].titlePostLabel = newsGroups[ii].name
-                                news[i].titlePostPhoto = newsGroups[ii].photo_50
-                            }
-                        }
-                    } else {
-                        for iii in 0..<newsProfiles.count {
-                            if news[i].postSource_id == newsProfiles[iii].id {
-                                news[i].titlePostId = newsProfiles[iii].id
-                                news[i].titlePostLabel = newsProfiles[iii].fullName
-                                news[i].titlePostPhoto = newsProfiles[iii].photo_50
-                            }
-                        }
-                    }
+                let jsonGroup = DispatchGroup()
+                DispatchQueue.global().async(group: jsonGroup) {
+                    news = json["response"]["items"].arrayValue.map { News(json: $0) }
                 }
-                completion?(news, nil)
+                DispatchQueue.global().async(group: jsonGroup) {
+                    users = json["response"]["profiles"].arrayValue.map { Owner(json: $0) }
+                }
+                DispatchQueue.global().async(group: jsonGroup) {
+                    groups = json["response"]["groups"].arrayValue.map { Owner(json: $0) }
+                }
+                DispatchQueue.global().async(group: jsonGroup) {
+                    nextFrom = json["response"]["next_from"].stringValue
+                }
+                jsonGroup.notify(queue: DispatchQueue.main) {
+                    completion?(news, users, groups, nextFrom, nil)
+                }
             case .failure(let error):
-                completion?(nil, error)
+                completion?(nil, nil, nil, nil, error)
             }
         }
     }
@@ -212,5 +210,28 @@ class VKService {
         
         VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON(queue: .global(qos: .userInteractive)) { response in }
             
+    }
+    
+    func getVideo(q: String, completion: (([Video]?, Error?) -> Void)? = nil) {
+        let path = "/method/video.get"
+        let parameters: Parameters = [
+            "videos": q,
+            "access_token": Session.shared.token,
+            "v": versionAPI
+        ]
+        let url = baseUrl + path
+        
+        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON(queue: .global(qos: .userInteractive)) { response in
+            print(VKService.sharedManager.request(url, method: .get, parameters: parameters))
+            switch response.result {
+            case .success(let value):
+                let json = JSON(value)
+                var videos = [Video]()
+                videos = json["response"]["items"].arrayValue.map { Video(json: $0) }
+                completion?(videos, nil)
+            case .failure(let error):
+                completion?(nil, error)
+            }
+        }
     }
 }

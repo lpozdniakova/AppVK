@@ -12,9 +12,6 @@ import RealmSwift
 
 class News: Object {
     @objc dynamic var newsType = ""
-    @objc dynamic var titlePostId = 0
-    @objc dynamic var titlePostPhoto = ""
-    @objc dynamic var titlePostLabel = ""
     @objc dynamic var titlePostTime: Double = 0.0
     @objc dynamic var geoCoordinates = ""
     @objc dynamic var geoPlaceTitle = ""
@@ -25,14 +22,22 @@ class News: Object {
     @objc dynamic var attachmentsType = ""
     @objc dynamic var attachments_photoWidth = 0
     @objc dynamic var attachments_photoHeight = 0
+    @objc dynamic var attachmentsId = 0
+    @objc dynamic var attachmentsOwnerId = 0
     @objc dynamic var post_id = 0
+    
+    @objc dynamic var repostOwnerId = 0
+    @objc dynamic var repostPhoto = ""
+    @objc dynamic var repostPhotoWidth = 0
+    @objc dynamic var repostPhotoHeight = 0
+    @objc dynamic var repostText = ""
+    @objc dynamic var repostDate: Double = 0.0
     
     @objc dynamic var postImage = ""
     
     @objc dynamic var commentsCount = 0
     @objc dynamic var likesCount = 0
     @objc dynamic var commentCanPost = 0
-    
     @objc dynamic var userLikes = 0
     @objc dynamic var repostsCount = 0
     @objc dynamic var viewsCount = 0
@@ -52,9 +57,15 @@ class News: Object {
         let typeAttachments = json["attachments"][0]["type"]
         switch typeAttachments {
         case "photo":
-            self.attachments_typePhoto = json["attachments"][0]["photo"]["sizes"][6]["url"].stringValue
-            self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][6]["width"].intValue
-            self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][6]["height"].intValue
+            if json["attachments"][0]["photo"]["sizes"][6]["url"].stringValue.isEmpty {
+                self.attachments_typePhoto = json["attachments"][0]["photo"]["sizes"][0]["url"].stringValue
+                self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][0]["width"].intValue
+                self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][0]["height"].intValue
+            } else {
+                self.attachments_typePhoto = json["attachments"][0]["photo"]["sizes"][6]["url"].stringValue
+                self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][6]["width"].intValue
+                self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][6]["height"].intValue
+            }
         case "link":
             self.attachments_typePhoto = json["attachments"][0]["link"]["photo"]["sizes"][0]["url"].stringValue
             self.attachments_photoWidth = json["attachments"][0]["link"]["photo"]["sizes"][0]["width"].intValue
@@ -63,33 +74,28 @@ class News: Object {
             self.attachments_typePhoto = json["attachments"][0]["video"]["photo_800"].stringValue
             self.attachments_photoWidth = json["attachments"][0]["video"]["width"].intValue
             self.attachments_photoHeight = json["attachments"][0]["video"]["height"].intValue
+            self.attachmentsId = json["attachments"][0]["video"]["id"].intValue
+            self.attachmentsOwnerId = json["attachments"][0]["video"]["owner_id"].intValue
         case "wall_photo":
             self.attachments_typePhoto = json["attachments"][0]["photo"]["sizes"][3]["url"].stringValue
             self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][3]["width"].intValue
             self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][3]["height"].intValue
+        case "doc":
+            self.attachments_typePhoto = json["attachments"][0]["doc"]["url"].stringValue
+            //self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][3]["width"].intValue
+            //self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][3]["height"].intValue
         default:
             print("Another type of attachments")
         }
         
-        /*if  typeAttachments == "photo" {
-            self.attachments_typePhoto = json["attachments"][0]["photo"]["sizes"][6]["url"].stringValue
-            self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][6]["width"].intValue
-            self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][6]["height"].intValue
-        } else if typeAttachments == "link" {
-            self.attachments_typePhoto = json["attachments"][0]["link"]["photo"]["sizes"][0]["url"].stringValue
-            self.attachments_photoWidth = json["attachments"][0]["link"]["photo"]["sizes"][0]["width"].intValue
-            self.attachments_photoHeight = json["attachments"][0]["link"]["photo"]["sizes"][0]["height"].intValue
-        } else if typeAttachments == "video" {
-            self.attachments_typePhoto = json["attachments"][0]["video"]["photo_800"].stringValue
-            self.attachments_photoWidth = json["attachments"][0]["video"]["width"].intValue
-            self.attachments_photoHeight = json["attachments"][0]["video"]["height"].intValue
-        } else if typeAttachments == "wall_photo" {
-            self.attachments_typePhoto = json["attachments"][0]["photo"]["sizes"][3]["url"].stringValue
-            self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][3]["width"].intValue
-            self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][3]["height"].intValue
-        }*/
-        
         self.postImage = json["photos"][0]["src"].stringValue
+        
+        self.repostOwnerId = json["copy_history"][0]["owner_id"].intValue
+        self.repostText = json["copy_history"][0]["text"].stringValue
+        self.repostPhoto = json["copy_history"][0]["attachments"][0]["photo"]["sizes"][6]["url"].stringValue
+        self.repostPhotoWidth = json["copy_history"][0]["attachments"][0]["photo"]["sizes"][6]["width"].intValue
+        self.repostPhotoHeight = json["copy_history"][0]["attachments"][0]["photo"]["sizes"][6]["height"].intValue
+        self.repostDate = json["copy_history"][0]["date"].doubleValue
         
         self.post_id = json["post_id"].intValue
         self.geoCoordinates = json["geo"]["coordinates"].stringValue

@@ -16,37 +16,36 @@ class NewsController: UITableViewController {
     private let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
     private var news: Results<News>?
     private var notificationToken: NotificationToken?
+    private var owners: Results<Owner>?
+    private var videos: Results<Video>?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //self.tableView.rowHeight = 500
-        //self.tableView.estimatedRowHeight = 500
         tableView.rowHeight = UITableView.automaticDimension
-        pairTableAndRealm()
         
         tableView.register(UINib(nibName: "NewsHeaderTableViewCell", bundle: nil), forCellReuseIdentifier: NewsHeaderTableViewCell.reuseIdentifier)
+        tableView.register(UINib(nibName: "NewsRepostHeaderTableViewCell", bundle: nil), forCellReuseIdentifier: NewsRepostHeaderTableViewCell.reuseIdentifier)
         tableView.register(UINib(nibName: "NewsTextTableViewCell", bundle: nil), forCellReuseIdentifier: NewsTextTableViewCell.reuseIdentifier)
         tableView.register(UINib(nibName: "NewsImageTableViewCell", bundle: nil), forCellReuseIdentifier: NewsImageTableViewCell.reuseIdentifier)
         tableView.register(UINib(nibName: "NewsFooterTableViewCell", bundle: nil), forCellReuseIdentifier: NewsFooterTableViewCell.reuseIdentifier)
         tableView.register(UINib(nibName: "NewsSeparatorTableViewCell", bundle: nil), forCellReuseIdentifier: NewsSeparatorTableViewCell.reuseIdentifier)
         tableView.register(UINib(nibName: "NewsDefaultTableViewCell", bundle: nil), forCellReuseIdentifier: NewsDefaultTableViewCell.reuseIdentifier)
+        tableView.register(UINib(nibName: "NewsWebViewTableViewCell", bundle: nil), forCellReuseIdentifier: NewsWebViewTableViewCell.reuseIdentifier)
         
-        vkService.loadVKNewsFeed() { news, error in
-            if let error = error {
-                print(error.localizedDescription)
-                return
-            } else if let news = news {
-                RealmProvider.save(items: news)
-            }
-        }
+        loadNews()
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        pairTableAndRealm()
+    }
+    
     func pairTableAndRealm() {
-        //let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
-        guard let realm = try? Realm() else { return }
-        news = realm.objects(News.self)
-        
+        let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
+        guard let realm = try? Realm(configuration: config) else { return }
+        news = realm.objects(News.self).sorted(byKeyPath: "titlePostTime", ascending: false)
+        owners = realm.objects(Owner.self)
+        videos = realm.objects(Video.self)
         notificationToken = news?.observe { [weak self] (changes: RealmCollectionChange) in
             guard let tableView = self?.tableView else { return }
             
@@ -55,9 +54,9 @@ class NewsController: UITableViewController {
                 tableView.reloadData()
             case .update(_, let deletions, let insertions, let modifications):
                 tableView.beginUpdates()
-                tableView.insertRows(at: insertions.map({ IndexPath(row: 0, section: $0) }), with: .none)
-                tableView.deleteRows(at: deletions.map({ IndexPath(row: 0, section: $0) }), with: .none)
-                tableView.reloadRows(at: modifications.map({ IndexPath(row: 0, section: $0) }), with: .none)
+                tableView.insertSections(IndexSet(insertions), with: .automatic)
+                tableView.deleteSections(IndexSet(deletions), with: .automatic)
+                tableView.reloadSections(IndexSet(modifications), with: .automatic)
                 tableView.endUpdates()
                 break
             case .error(let error):
@@ -67,12 +66,36 @@ class NewsController: UITableViewController {
         }
     }
     
+    func loadNews(from: String = "") {
+        vkService.loadVKNewsFeed(startFrom: from) { news, users, groups, nextFrom, error in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            } else if let news = news, let users = users, let groups = groups {
+                RealmProvider.save(items: users)
+                RealmProvider.save(items: groups)
+                RealmProvider.save(items: news)
+            }
+        }
+    }
+    
+    func loadVideos(request: String) {
+        vkService.getVideo(q: request) { videos, error in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            } else if let videos = videos {
+                RealmProvider.save(items: videos)
+            }
+        }
+    }
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return news?.count ?? 0
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return 8
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -86,10 +109,44 @@ class NewsController: UITableViewController {
                 return UITableView.automaticDimension
             }
         case 2:
-            return UITableView.automaticDimension
+            if news![indexPath.section].attachments_typePhoto == "" {
+                return 0
+            } else {
+                let photoWidth = news?[indexPath.section].attachments_photoWidth ?? Int(tableView.frame.width)
+                let photoHeight = news?[indexPath.section].attachments_photoHeight ?? Int(tableView.frame.width)
+                var ratio: CGFloat = 1.0000
+                if photoHeight != 0 {
+                    ratio = CGFloat(photoWidth) / CGFloat(photoHeight)
+                }
+                return tableView.frame.width / ratio
+            }
         case 3:
-            return 24
+            if news![indexPath.section].repostOwnerId == 0 {
+                return 0
+            } else {
+                return 44
+            }
         case 4:
+            if news![indexPath.section].repostText == "" {
+                return 0
+            } else {
+                return UITableView.automaticDimension
+            }
+        case 5:
+            if news![indexPath.section].repostPhoto == "" {
+                return 0
+            } else {
+                let photoWidth = news?[indexPath.section].repostPhotoWidth ?? Int(tableView.frame.width)
+                let photoHeight = news?[indexPath.section].repostPhotoHeight ?? Int(tableView.frame.width)
+                var ratio: CGFloat = 1.0000
+                if photoHeight != 0 {
+                    ratio = CGFloat(photoWidth) / CGFloat(photoHeight)
+                }
+                return tableView.frame.width / ratio
+            }
+        case 6:
+            return 24
+        case 7:
             return 5
         default:
             return 0
@@ -100,9 +157,17 @@ class NewsController: UITableViewController {
         switch indexPath.row {
         case 0:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsHeaderCell") as? NewsHeaderTableViewCell else { return UITableViewCell() }
-            let urlUserImage = news![indexPath.section].titlePostPhoto //TODO: - убрать force-unwrap
+            guard var sourceID = news?[indexPath.section].postSource_id else { return  UITableViewCell() }
+            var urlUserImage = ""
+            if sourceID > 0 {
+                urlUserImage = owners?.filter("ownerId == %@", sourceID)[0].ownerPhoto ?? "https://vk.com/images/error404.png"
+                cell.userName.text = owners?.filter("ownerId == %@", sourceID)[0].userName
+            } else {
+                sourceID = -sourceID
+                urlUserImage = owners?.filter("ownerId == %@", sourceID)[0].ownerPhoto ?? "https://vk.com/images/error404.png"
+                cell.userName.text = owners?.filter("ownerId == %@", sourceID)[0].groupName
+            }
             cell.userImage.kf.setImage(with: URL(string: urlUserImage))
-            cell.userName.text = news![indexPath.section].titlePostLabel //TODO: - убрать force-unwrap
             cell.newsDate.text = Date(timeIntervalSince1970: news![indexPath.section].titlePostTime).timeAgo(numericDates: false) //TODO: - убрать force-unwrap
             return cell
         case 1:
@@ -110,24 +175,72 @@ class NewsController: UITableViewController {
             cell.newsText.text = news![indexPath.section].postText //TODO: - убрать force-unwrap
             return cell
         case 2:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsImageCell") as? NewsImageTableViewCell else { return UITableViewCell() }
-            let imageURL = news![indexPath.section].attachments_typePhoto //TODO: - убрать force-unwrap
-            let photoWidth = news?[indexPath.section].attachments_photoWidth ?? 0
-            let photoHeight = news?[indexPath.section].attachments_photoHeight ?? 0
-            var ratio = 1
-            if photoHeight != 0 {
-                ratio = photoWidth / photoHeight
+            if news![indexPath.section].attachments_typePhoto == "" {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsDefaultCell") as? NewsDefaultTableViewCell else { return UITableViewCell() }
+                return cell
+            } else {
+                if news![indexPath.section].attachmentsType == "video" {
+                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsWebViewCell") as? NewsWebViewTableViewCell else { return UITableViewCell() }
+                    let q = String(news![indexPath.section].attachmentsOwnerId) + "_" + String(news![indexPath.section].attachmentsId)
+                    loadVideos(request: q)
+                    let player = videos?.filter("id == %@", news![indexPath.section].attachmentsId)[0].player ?? "https://vk.com/images/error404.png"
+                    cell.configure(player: player)
+                    return cell
+                } else {
+                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsImageCell") as? NewsImageTableViewCell else { return UITableViewCell() }
+                    let imageURL = news![indexPath.section].attachments_typePhoto //TODO: - убрать force-unwrap
+                    cell.newsImage.kf.setImage(with: URL(string: imageURL))
+                    return cell
+                }
             }
-            let processor = DownsamplingImageProcessor(size: CGSize(width: tableView.frame.width, height: tableView.frame.width * CGFloat(ratio)))
-            cell.newsImage.kf.setImage(with: URL(string: imageURL),
-                                       options: [
-                                        .processor(processor),
-                                        .scaleFactor(UIScreen.main.scale),
-                                        .transition(.fade(1)),
-                                        .cacheOriginalImage
-                ])
-            return cell
         case 3:
+            if news![indexPath.section].repostOwnerId == 0 {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsDefaultCell") as? NewsDefaultTableViewCell else { return UITableViewCell() }
+                return cell
+            } else {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsRepostHeaderCell") as? NewsRepostHeaderTableViewCell else { return UITableViewCell() }
+                var sourceID = news![indexPath.section].repostOwnerId
+                var urlUserImage = ""
+                if sourceID > 0 {
+                    urlUserImage = owners?.filter("ownerId == %@", sourceID)[0].ownerPhoto ?? "https://vk.com/images/error404.png"
+                    cell.userName.text = "↪" + owners!.filter("ownerId == %@", sourceID)[0].userName
+                } else {
+                    sourceID = -sourceID
+                    urlUserImage = owners?.filter("ownerId == %@", sourceID)[0].ownerPhoto ?? "https://vk.com/images/error404.png"
+                    cell.userName.text = "↪" + owners!.filter("ownerId == %@", sourceID)[0].groupName
+                }
+                
+                cell.userImage.kf.setImage(with: URL(string: urlUserImage))
+                
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateStyle = .medium
+                dateFormatter.timeStyle = .none
+                dateFormatter.locale = Locale(identifier: "ru_RU")
+                
+                let date = Date(timeIntervalSince1970: news![indexPath.section].repostDate) //TODO: - убрать force-unwrap
+                cell.newsDate.text = dateFormatter.string(from: date)
+                return cell
+            }
+        case 4:
+            if news![indexPath.section].repostText == "" {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsDefaultCell") as? NewsDefaultTableViewCell else { return UITableViewCell() }
+                return cell
+            } else {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsTextCell") as? NewsTextTableViewCell else { return UITableViewCell() }
+                cell.newsText.text = news![indexPath.section].repostText //TODO: - убрать force-unwrap
+                return cell
+            }
+        case 5:
+            if news![indexPath.section].repostPhoto == "" {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsDefaultCell") as? NewsDefaultTableViewCell else { return UITableViewCell() }
+                return cell
+            } else {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsImageCell") as? NewsImageTableViewCell else { return UITableViewCell() }
+                let imageURL = news![indexPath.section].repostPhoto //TODO: - убрать force-unwrap
+                cell.newsImage.kf.setImage(with: URL(string: imageURL))
+                return cell
+            }
+        case 6:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsFooterCell") as? NewsFooterTableViewCell else { return UITableViewCell() }
             
             cell.delegateButton = self
@@ -143,21 +256,21 @@ class NewsController: UITableViewController {
             
             cell.likeLabel.text = String(news![indexPath.section].likesCount)
             
-            if news![indexPath.section].commentCanPost == 1 {
+            //if news![indexPath.section].commentCanPost == 1 {
                 cell.commentLabel.text = String(news![indexPath.section].commentsCount)
                 cell.iconCommentWidth.constant = 20
                 cell.commentLabelWidth.constant = 40
                 cell.commentLeadingConstraint.constant = 8
-            } else {
-                cell.iconCommentWidth.constant = 0
-                cell.commentLabelWidth.constant = 0
-                cell.commentLeadingConstraint.constant = 0
-            }
+//            } else {
+//                cell.iconCommentWidth.constant = 0
+//                cell.commentLabelWidth.constant = 0
+//                cell.commentLeadingConstraint.constant = 0
+//            }
             
             cell.shareLabel.text = String(news![indexPath.section].repostsCount)
             cell.viewsLabel.text = String(news![indexPath.section].viewsCount)
             return cell
-        case 4:
+        case 7:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsSeparatorCell") as? NewsSeparatorTableViewCell else { return UITableViewCell() }
             return cell
         default:
@@ -167,15 +280,16 @@ class NewsController: UITableViewController {
     }
 
     @IBAction func tapRefreshButton(_ sender: Any) {
-        vkService.loadVKNewsFeed() { [weak self] news, error in
-            if let error = error {
-                print(error.localizedDescription)
-                return
-            } else if let news = news {
-                RealmProvider.save(items: news)
-                DispatchQueue.main.async {
-                    self?.tableView.reloadData()
-                }
+        refreshBegin(refreshEnd: {() -> () in
+            self.refreshControl?.endRefreshing()
+        })
+    }
+    
+    func refreshBegin(refreshEnd: @escaping () -> ()) {
+        DispatchQueue.global().async() {
+            self.loadNews()
+            DispatchQueue.main.async {
+                refreshEnd()
             }
         }
     }
@@ -206,4 +320,8 @@ extension NewsController: CellForButtonsDelegate {
             }
         }
     }
+}
+
+protocol CellForButtonsDelegate {
+    func didTapCompleteButton(indexPath: IndexPath)
 }
