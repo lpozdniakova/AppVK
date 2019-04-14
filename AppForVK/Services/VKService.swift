@@ -176,6 +176,7 @@ class VKService {
                 }
                 DispatchQueue.global().async(group: jsonGroup) {
                     nextFrom = json["response"]["next_from"].stringValue
+                    Session.shared.nextFrom = nextFrom
                 }
                 jsonGroup.notify(queue: DispatchQueue.main) {
                     completion?(news, users, groups, nextFrom, nil)

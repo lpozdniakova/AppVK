@@ -21,6 +21,13 @@ class NewsController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.prefetchDataSource = self
+        
+        refreshControl = UIRefreshControl()
+        refreshControl!.attributedTitle = NSAttributedString(string: "Идет обновление...")
+        refreshControl!.addTarget(self, action: #selector(refresh(_:)), for: UIControl.Event.valueChanged)
+        
         tableView.rowHeight = UITableView.automaticDimension
         
         tableView.register(UINib(nibName: "NewsHeaderTableViewCell", bundle: nil), forCellReuseIdentifier: NewsHeaderTableViewCell.reuseIdentifier)
@@ -32,7 +39,7 @@ class NewsController: UITableViewController {
         tableView.register(UINib(nibName: "NewsDefaultTableViewCell", bundle: nil), forCellReuseIdentifier: NewsDefaultTableViewCell.reuseIdentifier)
         tableView.register(UINib(nibName: "NewsWebViewTableViewCell", bundle: nil), forCellReuseIdentifier: NewsWebViewTableViewCell.reuseIdentifier)
         
-        loadNews()
+        loadNews(from: Session.shared.nextFrom)
         
     }
     
@@ -41,7 +48,7 @@ class NewsController: UITableViewController {
     }
     
     func pairTableAndRealm() {
-        let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
+        //let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
         guard let realm = try? Realm(configuration: config) else { return }
         news = realm.objects(News.self).sorted(byKeyPath: "titlePostTime", ascending: false)
         owners = realm.objects(Owner.self)
@@ -66,7 +73,7 @@ class NewsController: UITableViewController {
         }
     }
     
-    func loadNews(from: String = "") {
+    func loadNews(from: String) {
         vkService.loadVKNewsFeed(startFrom: from) { news, users, groups, nextFrom, error in
             if let error = error {
                 print(error.localizedDescription)
@@ -75,6 +82,8 @@ class NewsController: UITableViewController {
                 RealmProvider.save(items: users)
                 RealmProvider.save(items: groups)
                 RealmProvider.save(items: news)
+//                guard let realm = try? Realm(configuration: self.config) else { return }
+//                self.owners = realm.objects(Owner.self)
             }
         }
     }
@@ -86,6 +95,8 @@ class NewsController: UITableViewController {
                 return
             } else if let videos = videos {
                 RealmProvider.save(items: videos)
+//                guard let realm = try? Realm(configuration: self.config) else { return }
+//                self.videos = realm.objects(Video.self)
             }
         }
     }
@@ -183,7 +194,9 @@ class NewsController: UITableViewController {
                     guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsWebViewCell") as? NewsWebViewTableViewCell else { return UITableViewCell() }
                     let q = String(news![indexPath.section].attachmentsOwnerId) + "_" + String(news![indexPath.section].attachmentsId)
                     loadVideos(request: q)
-                    let player = videos?.filter("id == %@", news![indexPath.section].attachmentsId)[0].player ?? "https://vk.com/images/error404.png"
+                    let videoID = news![indexPath.section].attachmentsId
+                    print(videoID)
+                    let player = videos?.filter("id == %@", videoID)[0].player ?? "https://vk.com/images/error404.png"
                     cell.configure(player: player)
                     return cell
                 } else {
@@ -279,7 +292,13 @@ class NewsController: UITableViewController {
         }
     }
 
-    @IBAction func tapRefreshButton(_ sender: Any) {
+//    @IBAction func tapRefreshButton(_ sender: Any) {
+//        refreshBegin(refreshEnd: {() -> () in
+//            self.refreshControl?.endRefreshing()
+//        })
+//    }
+    
+    @objc private func refresh(_ sender: Any) {
         refreshBegin(refreshEnd: {() -> () in
             self.refreshControl?.endRefreshing()
         })
@@ -287,7 +306,7 @@ class NewsController: UITableViewController {
     
     func refreshBegin(refreshEnd: @escaping () -> ()) {
         DispatchQueue.global().async() {
-            self.loadNews()
+            self.loadNews(from: "")
             DispatchQueue.main.async {
                 refreshEnd()
             }
@@ -324,4 +343,17 @@ extension NewsController: CellForButtonsDelegate {
 
 protocol CellForButtonsDelegate {
     func didTapCompleteButton(indexPath: IndexPath)
+}
+
+extension NewsController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        if indexPaths.contains(where: isLoadingCell(for:)) {
+            loadNews(from: Session.shared.nextFrom)
+            print(Session.shared.nextFrom)
+        }
+    }
+
+    func isLoadingCell(for indexPath: IndexPath) -> Bool {
+        return indexPath.section == (self.news!.count - 1)
+    }
 }
