@@ -82,10 +82,14 @@ class NewsController: UITableViewController {
                 RealmProvider.save(items: users)
                 RealmProvider.save(items: groups)
                 RealmProvider.save(items: news)
-//                guard let realm = try? Realm(configuration: self.config) else { return }
-//                self.owners = realm.objects(Owner.self)
             }
         }
+//        news?.forEach {element in
+//            if element.attachmentsType == "video" {
+//                let q = String(element.attachmentsOwnerId) + "_" + String(element.attachmentsId)
+//                loadVideos(request: q)
+//            }
+//        }
     }
     
     func loadVideos(request: String) {
@@ -95,8 +99,6 @@ class NewsController: UITableViewController {
                 return
             } else if let videos = videos {
                 RealmProvider.save(items: videos)
-//                guard let realm = try? Realm(configuration: self.config) else { return }
-//                self.videos = realm.objects(Video.self)
             }
         }
     }
@@ -195,9 +197,16 @@ class NewsController: UITableViewController {
                     let q = String(news![indexPath.section].attachmentsOwnerId) + "_" + String(news![indexPath.section].attachmentsId)
                     loadVideos(request: q)
                     let videoID = news![indexPath.section].attachmentsId
-                    print(videoID)
-                    let player = videos?.filter("id == %@", videoID)[0].player ?? "https://vk.com/images/error404.png"
-                    cell.configure(player: player)
+                    guard let videos = videos?.filter("id == %@", videoID) else { return cell }
+                    if !videos.isEmpty {
+                        print("We have got some(\(videos.count)) videos")
+                        let player = videos[0].player
+                        cell.configure(player: player)
+                    } else {
+                        print("Seems it's a perfect time to have some crash.")
+                        let player = "https://vk.com/images/error404.png"
+                        cell.configure(player: player)
+                    }
                     return cell
                 } else {
                     guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsImageCell") as? NewsImageTableViewCell else { return UITableViewCell() }
