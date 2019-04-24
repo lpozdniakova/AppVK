@@ -88,65 +88,83 @@ class News: Object {
         self.titlePostTime = json["date"].doubleValue
         self.attachmentsType = json["attachments"][0]["type"].stringValue
         
-        let typeAttachments = json["attachments"][0]["type"]
-        switch typeAttachments {
+        let newsType = json["type"].stringValue
+        switch newsType {
         case "photo":
-            let sizesCount = json["attachments"][0]["photo"]["sizes"].count
+            let sizesCount = json["photos"]["items"][0]["sizes"].count
             for i in 0..<(sizesCount-1) {
-                let width = json["attachments"][0]["photo"]["sizes"][i]["width"].intValue
+                let width = json["photos"]["items"][0]["sizes"][i]["width"].intValue
                 
                 if self.attachments_photoWidth != 604 {
                     if width > self.attachments_photoWidth {
-                        self.attachments_typePhoto = json["attachments"][0]["photo"]["sizes"][i]["url"].stringValue
-                        self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][i]["width"].intValue
-                        self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][i]["height"].intValue
+                        self.attachments_typePhoto = json["photos"]["items"][0]["sizes"][i]["url"].stringValue
+                        self.attachments_photoWidth = json["photos"]["items"][0]["sizes"][i]["width"].intValue
+                        self.attachments_photoHeight = json["photos"]["items"][0]["sizes"][i]["height"].intValue
                     }
                 }
             }
-        case "link":
-            let sizesCount = json["attachments"][0]["link"]["photo"]["sizes"].count
-            for i in 0..<(sizesCount-1) {
-                
-                if self.attachments_photoWidth != 604 {
-                    if json["attachments"][0]["link"]["photo"]["sizes"][i]["width"].intValue > self.attachments_photoWidth {
-                        self.attachments_typePhoto = json["attachments"][0]["link"]["photo"]["sizes"][i]["url"].stringValue
-                        self.attachments_photoWidth = json["attachments"][0]["link"]["photo"]["sizes"][i]["width"].intValue
-                        self.attachments_photoHeight = json["attachments"][0]["link"]["photo"]["sizes"][i]["height"].intValue
+        case "post":
+            let typeAttachments = json["attachments"][0]["type"]
+            switch typeAttachments {
+            case "photo":
+                let sizesCount = json["attachments"][0]["photo"]["sizes"].count
+                for i in 0..<(sizesCount-1) {
+                    let width = json["attachments"][0]["photo"]["sizes"][i]["width"].intValue
+                    
+                    if self.attachments_photoWidth != 604 {
+                        if width > self.attachments_photoWidth {
+                            self.attachments_typePhoto = json["attachments"][0]["photo"]["sizes"][i]["url"].stringValue
+                            self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][i]["width"].intValue
+                            self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][i]["height"].intValue
+                        }
                     }
                 }
-            }
-        case "video":
-            self.attachments_typePhoto = json["attachments"][0]["video"]["photo_800"].stringValue
-            self.attachments_photoWidth = json["attachments"][0]["video"]["width"].intValue
-            self.attachments_photoHeight = json["attachments"][0]["video"]["height"].intValue
-            self.attachmentsId = json["attachments"][0]["video"]["id"].intValue
-            self.attachmentsOwnerId = json["attachments"][0]["video"]["owner_id"].intValue
-        case "wall_photo":
-            let sizesCount = json["attachments"][0]["photo"]["sizes"].count
-            for i in 0..<(sizesCount-1) {
-                self.attachments_typePhoto = json["attachments"][0]["photo"]["sizes"][0]["url"].stringValue
-                self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][0]["width"].intValue
-                self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][0]["height"].intValue
-                
-                if self.attachments_photoWidth != 604 {
-                    if json["attachments"][0]["photo"]["sizes"][i]["width"].intValue > self.attachments_photoWidth {
-                        self.attachments_typePhoto = json["attachments"][0]["photo"]["sizes"][i]["url"].stringValue
-                        self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][i]["width"].intValue
-                        self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][i]["height"].intValue
+            case "link":
+                let sizesCount = json["attachments"][0]["link"]["photo"]["sizes"].count
+                for i in 0..<(sizesCount-1) {
+                    
+                    if self.attachments_photoWidth != 604 {
+                        if json["attachments"][0]["link"]["photo"]["sizes"][i]["width"].intValue > self.attachments_photoWidth {
+                            self.attachments_typePhoto = json["attachments"][0]["link"]["photo"]["sizes"][i]["url"].stringValue
+                            self.attachments_photoWidth = json["attachments"][0]["link"]["photo"]["sizes"][i]["width"].intValue
+                            self.attachments_photoHeight = json["attachments"][0]["link"]["photo"]["sizes"][i]["height"].intValue
+                        }
                     }
                 }
-            }
-//            self.attachments_typePhoto = json["attachments"][0]["photo"]["sizes"][3]["url"].stringValue
-//            self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][3]["width"].intValue
-//            self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][3]["height"].intValue
-        case "doc":
-            self.attachments_typePhoto = json["attachments"][0]["doc"]["url"].stringValue
-            //self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][3]["width"].intValue
+            case "video":
+                self.attachments_typePhoto = json["attachments"][0]["video"]["photo_800"].stringValue
+                self.attachments_photoWidth = json["attachments"][0]["video"]["width"].intValue
+                self.attachments_photoHeight = json["attachments"][0]["video"]["height"].intValue
+                self.attachmentsId = json["attachments"][0]["video"]["id"].intValue
+                self.attachmentsOwnerId = json["attachments"][0]["video"]["owner_id"].intValue
+            case "wall_photo":
+                let sizesCount = json["attachments"][0]["photo"]["sizes"].count
+                for i in 0..<(sizesCount-1) {
+                    self.attachments_typePhoto = json["attachments"][0]["photo"]["sizes"][0]["url"].stringValue
+                    self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][0]["width"].intValue
+                    self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][0]["height"].intValue
+                    
+                    if self.attachments_photoWidth != 604 {
+                        if json["attachments"][0]["photo"]["sizes"][i]["width"].intValue > self.attachments_photoWidth {
+                            self.attachments_typePhoto = json["attachments"][0]["photo"]["sizes"][i]["url"].stringValue
+                            self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][i]["width"].intValue
+                            self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][i]["height"].intValue
+                        }
+                    }
+                }
+                //            self.attachments_typePhoto = json["attachments"][0]["photo"]["sizes"][3]["url"].stringValue
+                //            self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][3]["width"].intValue
+            //            self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][3]["height"].intValue
+            case "doc":
+                self.attachments_typePhoto = json["attachments"][0]["doc"]["url"].stringValue
+                //self.attachments_photoWidth = json["attachments"][0]["photo"]["sizes"][3]["width"].intValue
             //self.attachments_photoHeight = json["attachments"][0]["photo"]["sizes"][3]["height"].intValue
+            default:
+                print("Another type of attachments")
+            }
         default:
-            print("Another type of attachments")
+            print("Another type of news")
         }
-        
         self.postImage = json["photos"][0]["src"].stringValue
         
         self.repostOwnerId = json["copy_history"][0]["owner_id"].intValue

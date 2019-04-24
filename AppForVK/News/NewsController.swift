@@ -14,8 +14,8 @@ class NewsController: UITableViewController {
     
     private let vkService = VKService()
     private let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
-    private var news: Results<News>?
     private var notificationToken: NotificationToken?
+    private var news: Results<News>?
     private var owners: Results<Owner>?
     private var videos: Results<Video>?
     

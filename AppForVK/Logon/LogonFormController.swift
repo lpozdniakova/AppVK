@@ -29,11 +29,13 @@ final class LogonFormController: UIViewController {
         urlComponents.host = "oauth.vk.com"
         urlComponents.path = "/authorize"
         urlComponents.queryItems = [
-            //URLQueryItem(name: "client_id", value: "6849043"),
-            URLQueryItem(name: "client_id", value: "6932198"),
+            //URLQueryItem(name: "client_id", value: "6849043"), //AppForVK
+            //URLQueryItem(name: "client_id", value: "6932198"), //AppForVK2
+            URLQueryItem(name: "client_id", value: "6704883"), //Andrey Antropov
             URLQueryItem(name: "display", value: "mobile"),
             URLQueryItem(name: "redirect_uri", value: "https://oauth.vk.com/blank.html"),
-            URLQueryItem(name: "scope", value: "offline,friends,photos,groups,wall,email,video"),
+            URLQueryItem(name: "scope", value: "offline,friends,photos,groups,wall,email,video,messages"),
+            //URLQueryItem(name: "scope", value: "274438"),
             URLQueryItem(name: "response_type", value: "token"),
             URLQueryItem(name: "v", value: "5.92")
         ]

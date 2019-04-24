@@ -223,7 +223,6 @@ class VKService {
         let url = baseUrl + path
         
         VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON(queue: .global(qos: .userInteractive)) { response in
-            print(VKService.sharedManager.request(url, method: .get, parameters: parameters))
             switch response.result {
             case .success(let value):
                 let json = JSON(value)
@@ -232,6 +231,45 @@ class VKService {
                 completion?(videos, nil)
             case .failure(let error):
                 completion?(nil, error)
+            }
+        }
+    }
+    
+    func loadMessages(completion: (([Message]?, [Owner]?, [Owner]?, Error?) -> Void)? = nil) {
+        let path = "/method/messages.getConversations"
+        
+        let parameters: Parameters = [
+            "access_token": Session.shared.token,
+            "extended": "1",
+            "v": versionAPI
+        ]
+        
+        let url = baseUrl + path
+        
+        Alamofire.request(baseUrl + path, method: .get, parameters: parameters).responseJSON(queue: .global(qos: .userInteractive)) { response in
+            print(VKService.sharedManager.request(url, method: .get, parameters: parameters))
+            switch response.result {
+            case .success(let value):
+                let json = JSON(value)
+                var messages = [Message]()
+                var users = [Owner]()
+                var groups = [Owner]()
+                
+                let jsonGroup = DispatchGroup()
+                DispatchQueue.global().async(group: jsonGroup) {
+                    messages = json["response"]["items"].arrayValue.map { Message(json: $0) }
+                }
+                DispatchQueue.global().async(group: jsonGroup) {
+                    users = json["response"]["profiles"].arrayValue.map { Owner(json: $0) }
+                }
+                DispatchQueue.global().async(group: jsonGroup) {
+                    groups = json["response"]["groups"].arrayValue.map { Owner(json: $0) }
+                }
+                jsonGroup.notify(queue: DispatchQueue.main) {
+                    completion?(messages, users, groups, nil)
+                }
+            case .failure(let error):
+                completion?(nil, nil, nil, error)
             }
         }
     }
