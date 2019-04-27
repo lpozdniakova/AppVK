@@ -26,38 +26,6 @@ class News: Object {
     @objc dynamic var attachmentsOwnerId = 0
     @objc dynamic var post_id = 0
     
-//    //MARK: - Sizes images
-//    @objc dynamic var attachments_urlPhoto_s: String = ""
-//    @objc dynamic var attachments_photoWidth_s = 0
-//    @objc dynamic var attachments_photoHeight_s = 0
-//    @objc dynamic var attachments_urlPhoto_m: String = ""
-//    @objc dynamic var attachments_photoWidth_m = 0
-//    @objc dynamic var attachments_photoHeight_m = 0
-//    @objc dynamic var attachments_urlPhoto_x: String = ""
-//    @objc dynamic var attachments_photoWidth_x = 0
-//    @objc dynamic var attachments_photoHeight_x = 0
-//    @objc dynamic var attachments_urlPhoto_o: String = ""
-//    @objc dynamic var attachments_photoWidth_o = 0
-//    @objc dynamic var attachments_photoHeight_o = 0
-//    @objc dynamic var attachments_urlPhoto_p: String = ""
-//    @objc dynamic var attachments_photoWidth_p = 0
-//    @objc dynamic var attachments_photoHeight_p = 0
-//    @objc dynamic var attachments_urlPhoto_q: String = ""
-//    @objc dynamic var attachments_photoWidth_q = 0
-//    @objc dynamic var attachments_photoHeight_q = 0
-//    @objc dynamic var attachments_urlPhoto_r: String = ""
-//    @objc dynamic var attachments_photoWidth_r = 0
-//    @objc dynamic var attachments_photoHeight_r = 0
-//    @objc dynamic var attachments_urlPhoto_y: String = ""
-//    @objc dynamic var attachments_photoWidth_y = 0
-//    @objc dynamic var attachments_photoHeight_y = 0
-//    @objc dynamic var attachments_urlPhoto_z: String = ""
-//    @objc dynamic var attachments_photoWidth_z = 0
-//    @objc dynamic var attachments_photoHeight_z = 0
-//    @objc dynamic var attachments_urlPhoto_w: String = ""
-//    @objc dynamic var attachments_photoWidth_w = 0
-//    @objc dynamic var attachments_photoHeight_w = 0
-    
     //MARK: - Repost
     @objc dynamic var repostOwnerId = 0
     @objc dynamic var repostPhoto = ""
@@ -121,13 +89,15 @@ class News: Object {
                 }
             case "link":
                 let sizesCount = json["attachments"][0]["link"]["photo"]["sizes"].count
-                for i in 0..<(sizesCount-1) {
-                    
-                    if self.attachments_photoWidth != 604 {
-                        if json["attachments"][0]["link"]["photo"]["sizes"][i]["width"].intValue > self.attachments_photoWidth {
-                            self.attachments_typePhoto = json["attachments"][0]["link"]["photo"]["sizes"][i]["url"].stringValue
-                            self.attachments_photoWidth = json["attachments"][0]["link"]["photo"]["sizes"][i]["width"].intValue
-                            self.attachments_photoHeight = json["attachments"][0]["link"]["photo"]["sizes"][i]["height"].intValue
+                if sizesCount != 0 {
+                    for i in 0..<(sizesCount-1) {
+                        
+                        if self.attachments_photoWidth != 604 {
+                            if json["attachments"][0]["link"]["photo"]["sizes"][i]["width"].intValue > self.attachments_photoWidth {
+                                self.attachments_typePhoto = json["attachments"][0]["link"]["photo"]["sizes"][i]["url"].stringValue
+                                self.attachments_photoWidth = json["attachments"][0]["link"]["photo"]["sizes"][i]["width"].intValue
+                                self.attachments_photoHeight = json["attachments"][0]["link"]["photo"]["sizes"][i]["height"].intValue
+                            }
                         }
                     }
                 }
@@ -186,4 +156,9 @@ class News: Object {
         self.viewsCount = json["views"]["count"].intValue
     }
     
+}
+
+protocol ImageNodeRepresentable {
+    var url: URL { get }
+    var aspectRatio: CGFloat { get }
 }

@@ -56,6 +56,8 @@
 		46EE160B226E0DF100D8423B /* MessagesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46EE160A226E0DF100D8423B /* MessagesController.swift */; };
 		46EE160D226E0E1700D8423B /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46EE160C226E0E1700D8423B /* Message.swift */; };
 		46EE160F226E11CA00D8423B /* MessagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46EE160E226E11CA00D8423B /* MessagesCell.swift */; };
+		46EE1611227427DB00D8423B /* Realm+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46EE1610227427DB00D8423B /* Realm+Extensions.swift */; };
+		46EE162522745F6900D8423B /* NewsHeaderNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46EE162422745F6900D8423B /* NewsHeaderNode.swift */; };
 		7641CADC55FC2D239209BFDD /* Pods_AppForVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38B81FD7DF21D7D6F1754DFF /* Pods_AppForVK.framework */; };
 		C41C98C921CFA45E00451CC4 /* FriendsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41C98C821CFA45E00451CC4 /* FriendsController.swift */; };
 		C41C98CB21CFA4E300451CC4 /* FriendsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41C98CA21CFA4E300451CC4 /* FriendsCell.swift */; };
@@ -125,6 +127,8 @@
 		46EE160A226E0DF100D8423B /* MessagesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesController.swift; sourceTree = "<group>"; };
 		46EE160C226E0E1700D8423B /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		46EE160E226E11CA00D8423B /* MessagesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesCell.swift; sourceTree = "<group>"; };
+		46EE1610227427DB00D8423B /* Realm+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Realm+Extensions.swift"; sourceTree = "<group>"; };
+		46EE162422745F6900D8423B /* NewsHeaderNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsHeaderNode.swift; sourceTree = "<group>"; };
 		884794512C8989A5EC60D025 /* Pods-AppForVK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppForVK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AppForVK/Pods-AppForVK.debug.xcconfig"; sourceTree = "<group>"; };
 		C41C98C821CFA45E00451CC4 /* FriendsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsController.swift; sourceTree = "<group>"; };
 		C41C98CA21CFA4E300451CC4 /* FriendsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsCell.swift; sourceTree = "<group>"; };
@@ -212,6 +216,7 @@
 		4677443521DDFA6100D20768 /* News */ = {
 			isa = PBXGroup;
 			children = (
+				46EE162322745F4600D8423B /* Nodes */,
 				46140B7521FEB94C00967BF6 /* Buttons */,
 				46140B7E21FEB96C00967BF6 /* Cells */,
 				4677443821DF35DF00D20768 /* NewsController.swift */,
@@ -266,6 +271,7 @@
 				46D38F75220992D6006BDF78 /* UIColor+Extensions.swift */,
 				466B964C222D9A8B0052EA69 /* UIViewController+Extensions.swift */,
 				461B27572247724C00546713 /* Date+Extensions.swift */,
+				46EE1610227427DB00D8423B /* Realm+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -278,6 +284,14 @@
 				46EE160E226E11CA00D8423B /* MessagesCell.swift */,
 			);
 			path = Messages;
+			sourceTree = "<group>";
+		};
+		46EE162322745F4600D8423B /* Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				46EE162422745F6900D8423B /* NewsHeaderNode.swift */,
+			);
+			path = Nodes;
 			sourceTree = "<group>";
 		};
 		6A5C5BD210CC1CA1F2155C74 /* Pods */ = {
@@ -343,7 +357,6 @@
 		C4ACB73A21C4E46D00459EB9 /* AppForVK */ = {
 			isa = PBXGroup;
 			children = (
-				46EE1607226C13FC00D8423B /* Messages */,
 				46D38F7D220B0C6A006BDF78 /* Services */,
 				46D76641220307ED00C4B8B0 /* Extensions */,
 				46140B8D21FEBB7E00967BF6 /* DataBase */,
@@ -351,6 +364,7 @@
 				4677443521DDFA6100D20768 /* News */,
 				C41C98C721CF999700451CC4 /* Groups */,
 				C41C98C621CF994B00451CC4 /* Friends */,
+				46EE1607226C13FC00D8423B /* Messages */,
 				C4ACB73B21C4E46D00459EB9 /* AppDelegate.swift */,
 				C4FCF23521CA98140045D1DC /* MainViewController.swift */,
 				C4F174C621CA8AC100F65433 /* Main.storyboard */,
@@ -474,9 +488,13 @@
 				"${PODS_ROOT}/Target Support Files/Pods-AppForVK/Pods-AppForVK-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
+				"${BUILT_PRODUCTS_DIR}/PINCache/PINCache.framework",
+				"${BUILT_PRODUCTS_DIR}/PINOperation/PINOperation.framework",
+				"${BUILT_PRODUCTS_DIR}/PINRemoteImage/PINRemoteImage.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+				"${BUILT_PRODUCTS_DIR}/Texture/AsyncDisplayKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
@@ -484,9 +502,13 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PINCache.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PINOperation.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PINRemoteImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AsyncDisplayKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -504,6 +526,7 @@
 				46140B7D21FEB94C00967BF6 /* NewsLikeControl.swift in Sources */,
 				4669B9DF2250C053006B6D1C /* NewsImageTableViewCell.swift in Sources */,
 				46D766432203080B00C4B8B0 /* UIView+Extensions.swift in Sources */,
+				46EE1611227427DB00D8423B /* Realm+Extensions.swift in Sources */,
 				4638BD69220180F1007EF8D8 /* CustomPopAnimator.swift in Sources */,
 				C4FCF23621CA98140045D1DC /* MainViewController.swift in Sources */,
 				C41C98CB21CFA4E300451CC4 /* FriendsCell.swift in Sources */,
@@ -518,6 +541,7 @@
 				46837CEF225A6714006D6724 /* Video.swift in Sources */,
 				46D38F7F220B0C93006BDF78 /* VKService.swift in Sources */,
 				46D38F76220992D6006BDF78 /* UIColor+Extensions.swift in Sources */,
+				46EE162522745F6900D8423B /* NewsHeaderNode.swift in Sources */,
 				C4FE429721D3D6EA002F28CB /* AllGroupController.swift in Sources */,
 				4669B9E32250C0F6006B6D1C /* NewsFooterTableViewCell.swift in Sources */,
 				46D38F83220C3C76006BDF78 /* Group.swift in Sources */,
