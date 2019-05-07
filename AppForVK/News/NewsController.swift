@@ -19,6 +19,22 @@ class NewsController: UITableViewController {
     private var owners: Results<Owner>?
     private var videos: Results<Video>?
     
+    private var _urlDetector: NSDataDetector?
+    
+    var isExpand: Bool = false {
+        didSet {
+            if isExpand != oldValue {
+                self.tableView.reloadRows(at: [IndexPath(row: 1, section: 3)], with: .fade)
+            }
+        }
+    }
+    var urlDetector: NSDataDetector? {
+        if _urlDetector == nil {
+            _urlDetector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+        }
+        return _urlDetector
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -119,7 +135,18 @@ class NewsController: UITableViewController {
             if news![indexPath.section].postText == "" {
                 return 0
             } else {
-                return UITableView.automaticDimension
+                let attributedText = news![indexPath.section].postText.attributedString(font: UIFont.systemFont(ofSize: 15), lineSpacing: 9)
+                let size = attributedText?.boundingRect(with: CGSize(width: tableView.frame.width, height: CGFloat.greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
+                if isExpand {
+                    return UITableView.automaticDimension
+                } else {
+                    if Int(size!.height) > 50 {
+                        return 50
+                    } else {
+                        return UITableView.automaticDimension
+                    }
+                }
+                
             }
         case 2:
             if news![indexPath.section].attachments_typePhoto == "" {
@@ -185,7 +212,41 @@ class NewsController: UITableViewController {
             return cell
         case 1:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsTextCell") as? NewsTextTableViewCell else { return UITableViewCell() }
-            cell.newsText.text = news![indexPath.section].postText //TODO: - убрать force-unwrap
+            
+            let text = news![indexPath.section].postText
+            let attrString = NSMutableAttributedString(string: text, attributes: TextStyles.postStyle)
+            
+            urlDetector?.enumerateMatches(in: attrString.string, options: [], range: NSMakeRange(0, attrString.string.count), using: { (result, flags, stop) in
+                if result?.resultType == NSTextCheckingResult.CheckingType.link {
+                    
+                    var linkAttributes = TextStyles.postLinkStyle
+                    linkAttributes[kLinkAttributeName] = URL(string: (result?.url?.absoluteString)!)
+                    
+                    attrString.addAttributes(linkAttributes, range: (result?.range)!)
+                }
+            })
+            
+            cell.newsText.attributedText = attrString
+            cell.newsText.isUserInteractionEnabled = true
+            
+            let size = attrString.boundingRect(with: CGSize(width: cell.frame.width, height: CGFloat.greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
+            
+            if isExpand {
+                cell.expandButton.isHidden = true
+                cell.expandAction = nil
+            } else {
+                if size.height > 50 {
+                    cell.expandButton.isHidden = false
+                    cell.expandAction = { [weak self] (button) in
+                        self?.isExpand = true
+                    }
+                } else {
+                    cell.expandButton.isHidden = true
+                    cell.expandAction = nil
+                }
+            }
+            
+            //cell.newsText.text = news![indexPath.section].postText //TODO: - убрать force-unwrap
             return cell
         case 2:
             if news![indexPath.section].attachments_typePhoto == "" {
@@ -321,6 +382,17 @@ class NewsController: UITableViewController {
             }
         }
     }
+    
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        UIApplication.shared.open(URL, options: [:])
+        return false
+    }
+    
+//    @objc func expand(_ sender: UIButton, forRowAt indexPath: IndexPath) {
+//        indexPath.row.
+//        cell.isExpand = !isExpand
+//        tableView.reloadData()
+//    }
 }
 
 extension NewsController: CellForButtonsDelegate {

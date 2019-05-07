@@ -223,6 +223,7 @@ class VKService {
         let url = baseUrl + path
         
         VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON(queue: .global(qos: .userInteractive)) { response in
+            print(VKService.sharedManager.request(url, method: .get, parameters: parameters))
             switch response.result {
             case .success(let value):
                 let json = JSON(value)
@@ -272,5 +273,84 @@ class VKService {
                 completion?(nil, nil, nil, error)
             }
         }
+    }
+    
+    func loadNews(startFrom: String = "",
+                  upTo: Date? = nil,
+                  completion: @escaping (Swift.Result<[NewsItem], Error>, String) -> Void) {
+        
+        let path = "/method/newsfeed.get"
+        var parameters: Parameters = [
+            "access_token": Session.shared.token,
+            "filters": "post",
+            "v": versionAPI,
+            "count": "20",
+            "start_from": startFrom
+        ]
+        
+        if let upTo = upTo {
+            parameters["start_time"] = Int(upTo.timeIntervalSince1970.rounded(.down))
+        }
+        let url = baseUrl + path
+        
+        Alamofire.request(baseUrl + path, method: .get, parameters: parameters).responseJSON(queue: .global()) { response in
+            print(VKService.sharedManager.request(url, method: .get, parameters: parameters))
+            switch response.result {
+            case .failure(let error):
+                completion(.failure(error), "")
+            case .success(let value):
+                let json = JSON(value)
+                var friends = [FriendNews]()
+                var groups = [GroupNews]()
+                let nextFrom = json["response"]["next_from"].stringValue
+                
+                let parsingGroup = DispatchGroup()
+                DispatchQueue.global().async(group: parsingGroup) {
+                    friends = json["response"]["profiles"].arrayValue.map { FriendNews(json: $0) }
+                }
+                DispatchQueue.global().async(group: parsingGroup) {
+                    groups = json["response"]["groups"].arrayValue.map { GroupNews(json: $0) }
+                }
+                parsingGroup.notify(queue: .global()) {
+                    let news = json["response"]["items"].arrayValue.map { NewsItem(json: $0) }
+                    
+                    news.forEach { newsItem in
+                        if newsItem.sourceID > 0 {
+                            let source = friends.first(where: { $0.id == newsItem.sourceID })
+                            newsItem.source = source
+                        } else {
+                            let source = groups.first(where: { $0.id == -newsItem.sourceID })
+                            newsItem.source = source
+                        }
+                    }
+                    DispatchQueue.main.async {
+                        completion(.success(news), nextFrom)
+                    }
+                }
+            }
+        }
+    }
+    
+    func loadVideo(q: String) -> String {
+        let path = "/method/video.get"
+        let parameters: Parameters = [
+            "videos": q,
+            "access_token": Session.shared.token,
+            "v": versionAPI
+        ]
+        let url = baseUrl + path
+        var video = ""
+        
+        VKService.sharedManager.request(url, method: .get, parameters: parameters).responseJSON(queue: .global(qos: .userInteractive)) { response in
+            print(VKService.sharedManager.request(url, method: .get, parameters: parameters))
+            switch response.result {
+            case .success(let value):
+                let json = JSON(value)
+                video = json["response"][0]["items"][0]["player"].stringValue
+            case .failure(let error):
+                print(error)
+            }
+        }
+        return video
     }
 }

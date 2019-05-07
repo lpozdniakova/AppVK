@@ -25,16 +25,32 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nyd-Ve-WrI">
+                        <rect key="frame" x="150" y="13.5" width="170" height="30"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <accessibility key="accessibilityConfiguration" label="Показать полностью..."/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="30" id="DY0-7c-h8K"/>
+                            <constraint firstAttribute="width" constant="170" id="wPS-SE-ioz"/>
+                        </constraints>
+                        <state key="normal" title="Показать полностью..."/>
+                        <connections>
+                            <action selector="expand:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="3du-eB-loB"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="Pdd-vV-vIx" secondAttribute="bottom" id="Guc-5l-cVN"/>
                     <constraint firstAttribute="trailing" secondItem="Pdd-vV-vIx" secondAttribute="trailing" constant="20" symbolic="YES" id="KZM-hn-YKy"/>
+                    <constraint firstAttribute="bottom" secondItem="nyd-Ve-WrI" secondAttribute="bottom" id="Kr4-7U-G6p"/>
                     <constraint firstItem="Pdd-vV-vIx" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="Ovi-4B-jso"/>
+                    <constraint firstAttribute="trailing" secondItem="nyd-Ve-WrI" secondAttribute="trailing" id="Xxl-az-HjT"/>
                     <constraint firstItem="Pdd-vV-vIx" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" symbolic="YES" id="glM-Y3-ke3"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="expandButton" destination="nyd-Ve-WrI" id="nCT-4z-bK4"/>
                 <outlet property="newsText" destination="Pdd-vV-vIx" id="aop-sn-Fjx"/>
             </connections>
         </tableViewCell>

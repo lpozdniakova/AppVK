@@ -90,6 +90,10 @@ extension LogonFormController: WKNavigationDelegate {
         let vc = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as! MainViewController
         present(vc, animated: true)
         
+//        let newsVC = NewsTextureController()
+//        newsVC.modalTransitionStyle = .crossDissolve
+//        present(newsVC, animated: false)
+        
         decisionHandler(.cancel)
     }
 }

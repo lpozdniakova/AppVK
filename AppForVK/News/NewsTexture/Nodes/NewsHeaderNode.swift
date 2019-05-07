@@ -11,29 +11,30 @@ import AsyncDisplayKit
 
 class NewsHeaderNode: ASCellNode {
     //MARK: - Properties
-    private let source: Owner
+    private let date: Date
+    private let source: NewsSource
     private let nameNode = ASTextNode()
+    private let dateNode = ASTextNode()
     private let avatarImageNode = ASNetworkImageNode()
     private let imageHeight: CGFloat = 50
     
-    init(source: Owner) {
+    init(source: NewsSource, date: Date) {
         self.source = source
+        self.date = date
         super.init()
-        backgroundColor = UIColor.vk_color
+        backgroundColor = .clear
         setupSubnodes()
     }
     
     private func setupSubnodes() {
-        if source.ownerId > 0 {
-            nameNode.attributedText = NSAttributedString(string: source.userName, attributes: [.font : UIFont.systemFont(ofSize: 20)])
-        } else {
-            nameNode.attributedText = NSAttributedString(string: source.groupName, attributes: [.font : UIFont.systemFont(ofSize: 20)])
-        }
-        
+        nameNode.attributedText = NSAttributedString(string: source.title, attributes: TextStyles.usernameStyle)
         nameNode.backgroundColor = .clear
         addSubnode(nameNode)
         
-        avatarImageNode.url = URL(fileURLWithPath: source.ownerPhoto)
+        dateNode.attributedText = NSAttributedString(string: date.timeAgo(numericDates: false), attributes: TextStyles.timeStyle)
+        addSubnode(dateNode)
+        
+        avatarImageNode.url = source.imageUrl
         avatarImageNode.cornerRadius = imageHeight/2
         avatarImageNode.clipsToBounds = true
         avatarImageNode.shouldRenderProgressImages = true
@@ -43,14 +44,18 @@ class NewsHeaderNode: ASCellNode {
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         avatarImageNode.style.preferredSize = CGSize(width: imageHeight, height: imageHeight)
-        let insets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        let insets = UIEdgeInsets(top: 2, left: 10, bottom: 2, right: 0)
         let avatarWithInset = ASInsetLayoutSpec(insets: insets, child: avatarImageNode)
         
-        let textCenterSpec = ASCenterLayoutSpec(centeringOptions: .Y, sizingOptions: [], child: nameNode)
+        let nameWithInset = ASInsetLayoutSpec(insets: insets, child: nameNode)
+        let dateWithInset = ASInsetLayoutSpec(insets: insets, child: dateNode)
+        let verticalStackSpec = ASStackLayoutSpec()
+        verticalStackSpec.direction = .vertical
+        verticalStackSpec.children = [nameWithInset, dateWithInset]
         
         let horizontalStackSpec = ASStackLayoutSpec()
         horizontalStackSpec.direction = .horizontal
-        horizontalStackSpec.children = [avatarWithInset, textCenterSpec]
+        horizontalStackSpec.children = [avatarWithInset, verticalStackSpec]
         return horizontalStackSpec
     }
 }

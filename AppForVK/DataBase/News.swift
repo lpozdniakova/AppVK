@@ -157,8 +157,3 @@ class News: Object {
     }
     
 }
-
-protocol ImageNodeRepresentable {
-    var url: URL { get }
-    var aspectRatio: CGFloat { get }
-}

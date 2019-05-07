@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 extension String {
     subscript(index: Int) -> Character {
@@ -53,4 +54,14 @@ extension String {
     func index(at offset: Int) -> String.Index {
         return index(startIndex, offsetBy: offset)
     }
+    
+    func attributedString(font: UIFont, lineSpacing: CGFloat, alignment: NSTextAlignment = .left) -> NSAttributedString! {
+        let paragraphStyle: NSMutableParagraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineBreakMode = .byWordWrapping
+        paragraphStyle.lineSpacing = lineSpacing
+        paragraphStyle.alignment = alignment
+        paragraphStyle.paragraphSpacing = 0
+        return NSAttributedString(string: self, attributes: [NSAttributedString.Key.font: font, NSAttributedString.Key.paragraphStyle: paragraphStyle])
+    }
+    
 }
