@@ -40,7 +40,7 @@ class NewsFooterTableViewCell: UITableViewCell {
         
         if likeButton.currentImage == UIImage(named: "HeartWhite") {
             likeButton.setImage(UIImage(named: "Heart"), for: .normal)
-            likeLabel.textColor = UIColor(red: 254/255, green: 0/255, blue: 41/255, alpha: 1)
+            likeLabel.textColor = UIColor.vkRed
             
             if let likesTest = Int(likeLabel.text!) {
                 if likesTest < 1000 {

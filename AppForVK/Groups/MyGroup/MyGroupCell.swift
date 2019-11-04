@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Kingfisher
+//import Kingfisher
 
 class MyGroupCell: UITableViewCell {
 
@@ -22,10 +22,9 @@ class MyGroupCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
-    public func configure(with group: Group) {
-        myGroupName.text = group.name
-        let iconUrl = group.photo_50
-        myGroupImage.kf.setImage(with: URL(string: iconUrl))
+    func configure(with viewModel: MyGroupCellViewModel) {
+        myGroupName.text = viewModel.myGroupNameText
+        myGroupImage.image = viewModel.myGroupImage
     }
 
 }

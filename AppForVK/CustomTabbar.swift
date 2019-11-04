@@ -23,8 +23,7 @@ class CustomTabbar: UITabBar {
         let item1: UITabBarItem = UITabBarItem(title: "Друзья", image: nil, tag: 0)
         let item2: UITabBarItem = UITabBarItem(title: "Группы", image: nil, tag: 1)
         let item3: UITabBarItem = UITabBarItem(title: "Новости", image: nil, tag: 2)
-        let item4: UITabBarItem = UITabBarItem(title: "Новости 2", image: nil, tag: 3)
-        let item5: UITabBarItem = UITabBarItem(title: "Сообщения", image: nil, tag: 4)
-        self.setItems([item1, item2, item3, item4, item5], animated: true)
+        let item4: UITabBarItem = UITabBarItem(title: "Сообщения", image: nil, tag: 3)
+        self.setItems([item1, item2, item3, item4], animated: true)
     }
 }

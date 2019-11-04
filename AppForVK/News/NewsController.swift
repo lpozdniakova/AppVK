@@ -19,20 +19,12 @@ class NewsController: UITableViewController {
     private var owners: Results<Owner>?
     private var videos: Results<Video>?
     
-    private var _urlDetector: NSDataDetector?
-    
     var isExpand: Bool = false {
         didSet {
             if isExpand != oldValue {
                 self.tableView.reloadRows(at: [IndexPath(row: 1, section: 3)], with: .fade)
             }
         }
-    }
-    var urlDetector: NSDataDetector? {
-        if _urlDetector == nil {
-            _urlDetector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
-        }
-        return _urlDetector
     }
     
     override func viewDidLoad() {
@@ -100,12 +92,6 @@ class NewsController: UITableViewController {
                 RealmProvider.save(items: news)
             }
         }
-//        news?.forEach {element in
-//            if element.attachmentsType == "video" {
-//                let q = String(element.attachmentsOwnerId) + "_" + String(element.attachmentsId)
-//                loadVideos(request: q)
-//            }
-//        }
     }
     
     func loadVideos(request: String) {
@@ -212,19 +198,9 @@ class NewsController: UITableViewController {
             return cell
         case 1:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsTextCell") as? NewsTextTableViewCell else { return UITableViewCell() }
-            /*
+            
             let text = news![indexPath.section].postText
             let attrString = NSMutableAttributedString(string: text, attributes: TextStyles.postStyle)
-            
-            urlDetector?.enumerateMatches(in: attrString.string, options: [], range: NSMakeRange(0, attrString.string.count), using: { (result, flags, stop) in
-                if result?.resultType == NSTextCheckingResult.CheckingType.link {
-                    
-                    var linkAttributes = TextStyles.postLinkStyle
-                    linkAttributes[kLinkAttributeName] = URL(string: (result?.url?.absoluteString)!)
-                    
-                    attrString.addAttributes(linkAttributes, range: (result?.range)!)
-                }
-            })
             
             cell.newsText.attributedText = attrString
             cell.newsText.isUserInteractionEnabled = true
@@ -239,14 +215,14 @@ class NewsController: UITableViewController {
                     cell.expandButton.isHidden = false
                     cell.expandAction = { [weak self] (button) in
                         self?.isExpand = true
+                        cell.expandButton.isHidden = true
                     }
                 } else {
                     cell.expandButton.isHidden = true
                     cell.expandAction = nil
                 }
             }
-            */
-            cell.newsText.text = news![indexPath.section].postText //TODO: - убрать force-unwrap
+            
             return cell
         case 2:
             if news![indexPath.section].attachments_typePhoto == "" {
@@ -331,25 +307,17 @@ class NewsController: UITableViewController {
             
             if news![indexPath.section].userLikes == 1 {
                 cell.likeButton.setImage(UIImage(named: "Heart"), for: .normal)
-                cell.likeLabel.textColor = UIColor(red: 254/255, green: 0/255, blue: 41/255, alpha: 1)
+                cell.likeLabel.textColor = UIColor.vkRed
             } else {
                 cell.likeButton.setImage(UIImage(named: "HeartWhite"), for: .normal)
                 cell.likeLabel.textColor = UIColor.vk_color
             }
             
             cell.likeLabel.text = String(news![indexPath.section].likesCount)
-            
-            //if news![indexPath.section].commentCanPost == 1 {
-                cell.commentLabel.text = String(news![indexPath.section].commentsCount)
-                cell.iconCommentWidth.constant = 20
-                cell.commentLabelWidth.constant = 40
-                cell.commentLeadingConstraint.constant = 8
-//            } else {
-//                cell.iconCommentWidth.constant = 0
-//                cell.commentLabelWidth.constant = 0
-//                cell.commentLeadingConstraint.constant = 0
-//            }
-            
+            cell.commentLabel.text = String(news![indexPath.section].commentsCount)
+            cell.iconCommentWidth.constant = 20
+            cell.commentLabelWidth.constant = 40
+            cell.commentLeadingConstraint.constant = 8
             cell.shareLabel.text = String(news![indexPath.section].repostsCount)
             cell.viewsLabel.text = String(news![indexPath.section].viewsCount)
             return cell
@@ -361,12 +329,6 @@ class NewsController: UITableViewController {
             return cell
         }
     }
-
-//    @IBAction func tapRefreshButton(_ sender: Any) {
-//        refreshBegin(refreshEnd: {() -> () in
-//            self.refreshControl?.endRefreshing()
-//        })
-//    }
     
     @objc private func refresh(_ sender: Any) {
         refreshBegin(refreshEnd: {() -> () in
@@ -388,11 +350,6 @@ class NewsController: UITableViewController {
         return false
     }
     
-//    @objc func expand(_ sender: UIButton, forRowAt indexPath: IndexPath) {
-//        indexPath.row.
-//        cell.isExpand = !isExpand
-//        tableView.reloadData()
-//    }
 }
 
 extension NewsController: CellForButtonsDelegate {
@@ -433,7 +390,7 @@ extension NewsController: UITableViewDataSourcePrefetching {
             print(Session.shared.nextFrom)
         }
     }
-
+    
     func isLoadingCell(for indexPath: IndexPath) -> Bool {
         return indexPath.section == (self.news!.count - 1)
     }

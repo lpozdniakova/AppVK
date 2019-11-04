@@ -11,13 +11,8 @@ import UIKit
 struct TextStyles {
     static let cellControlColoredStyle: [NSAttributedString.Key: Any] = [
         .font: UIFont.systemFont(ofSize: 13),
-        .foregroundColor: UIColor(red: 254/255, green: 0/255, blue: 41/255, alpha: 1)
+        .foregroundColor: UIColor.vkRed
     ]
-    
-//    static let nameStyle: [NSAttributedString.Key: Any] = [
-//        .font: UIFont.boldSystemFont(ofSize: 15),
-//        .foregroundColor: UIColor.black
-//    ]
     
     static let usernameStyle: [NSAttributedString.Key: Any] = [
         .font: UIFont.boldSystemFont(ofSize: 17),
@@ -36,7 +31,7 @@ struct TextStyles {
     
     static let postLinkStyle: [NSAttributedString.Key: Any] = [
         .font: UIFont.systemFont(ofSize: 15),
-        .foregroundColor: UIColor(red: 59.0/255.0, green: 89.0/255.0, blue: 152.0/255.0, alpha: 1),
+        .foregroundColor: UIColor.vkBlue,
         .underlineStyle: NSUnderlineStyle.single.rawValue
     ]
     

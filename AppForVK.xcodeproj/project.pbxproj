@@ -21,6 +21,9 @@
 		4638BD6B2201C1A6007EF8D8 /* CustomInteractiveTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638BD6A2201C1A6007EF8D8 /* CustomInteractiveTransition.swift */; };
 		4638BD71220214ED007EF8D8 /* SectionIndexManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638BD70220214ED007EF8D8 /* SectionIndexManager.swift */; };
 		4638BD7322021BD8007EF8D8 /* FirstLetterSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638BD7222021BD8007EF8D8 /* FirstLetterSearch.swift */; };
+		464721C923706A7E0083CEFF /* MyGroupCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464721C823706A7E0083CEFF /* MyGroupCellViewModel.swift */; };
+		464721CB23706AC60083CEFF /* MyGroupCellViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464721CA23706AC60083CEFF /* MyGroupCellViewModelFactory.swift */; };
+		464721CD23706F8C0083CEFF /* UIImageView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464721CC23706F8C0083CEFF /* UIImageView+Extensions.swift */; };
 		4669B9D72250B98E006B6D1C /* NewsHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4669B9D52250B98E006B6D1C /* NewsHeaderTableViewCell.swift */; };
 		4669B9D82250B98E006B6D1C /* NewsHeaderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4669B9D62250B98E006B6D1C /* NewsHeaderTableViewCell.xib */; };
 		4669B9DB2250BF26006B6D1C /* NewsTextTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4669B9D92250BF26006B6D1C /* NewsTextTableViewCell.swift */; };
@@ -95,6 +98,9 @@
 		4638BD6A2201C1A6007EF8D8 /* CustomInteractiveTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomInteractiveTransition.swift; sourceTree = "<group>"; };
 		4638BD70220214ED007EF8D8 /* SectionIndexManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionIndexManager.swift; sourceTree = "<group>"; };
 		4638BD7222021BD8007EF8D8 /* FirstLetterSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstLetterSearch.swift; sourceTree = "<group>"; };
+		464721C823706A7E0083CEFF /* MyGroupCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyGroupCellViewModel.swift; sourceTree = "<group>"; };
+		464721CA23706AC60083CEFF /* MyGroupCellViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyGroupCellViewModelFactory.swift; sourceTree = "<group>"; };
+		464721CC23706F8C0083CEFF /* UIImageView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extensions.swift"; sourceTree = "<group>"; };
 		4669B9D52250B98E006B6D1C /* NewsHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsHeaderTableViewCell.swift; sourceTree = "<group>"; };
 		4669B9D62250B98E006B6D1C /* NewsHeaderTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewsHeaderTableViewCell.xib; sourceTree = "<group>"; };
 		4669B9D92250BF26006B6D1C /* NewsTextTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTextTableViewCell.swift; sourceTree = "<group>"; };
@@ -221,6 +227,17 @@
 			path = DataBase;
 			sourceTree = "<group>";
 		};
+		464721C3237037430083CEFF /* MyGroup */ = {
+			isa = PBXGroup;
+			children = (
+				C4FE429821D3D767002F28CB /* MyGroupCell.swift */,
+				C4FE429421D3D6B1002F28CB /* MyGroupController.swift */,
+				464721C823706A7E0083CEFF /* MyGroupCellViewModel.swift */,
+				464721CA23706AC60083CEFF /* MyGroupCellViewModelFactory.swift */,
+			);
+			path = MyGroup;
+			sourceTree = "<group>";
+		};
 		4677443521DDFA6100D20768 /* News */ = {
 			isa = PBXGroup;
 			children = (
@@ -279,6 +296,7 @@
 				466B964C222D9A8B0052EA69 /* UIViewController+Extensions.swift */,
 				461B27572247724C00546713 /* Date+Extensions.swift */,
 				46EE1610227427DB00D8423B /* Realm+Extensions.swift */,
+				464721CC23706F8C0083CEFF /* UIImageView+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -323,9 +341,8 @@
 		C41C98C721CF999700451CC4 /* Groups */ = {
 			isa = PBXGroup;
 			children = (
-				C4FE429421D3D6B1002F28CB /* MyGroupController.swift */,
+				464721C3237037430083CEFF /* MyGroup */,
 				C4FE429621D3D6EA002F28CB /* AllGroupController.swift */,
-				C4FE429821D3D767002F28CB /* MyGroupCell.swift */,
 				C4FE429A21D3D798002F28CB /* AllGroupCell.swift */,
 				4638BD6422017D98007EF8D8 /* CustomNavigationController.swift */,
 				4638BD6622017E83007EF8D8 /* CustomPushAnimator.swift */,
@@ -503,6 +520,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				464721CD23706F8C0083CEFF /* UIImageView+Extensions.swift in Sources */,
 				4638BD6722017E83007EF8D8 /* CustomPushAnimator.swift in Sources */,
 				46140B7D21FEB94C00967BF6 /* NewsLikeControl.swift in Sources */,
 				4669B9DF2250C053006B6D1C /* NewsImageTableViewCell.swift in Sources */,
@@ -515,6 +533,7 @@
 				46EE163C227587DD00D8423B /* TextStyles.swift in Sources */,
 				C41C98C921CFA45E00451CC4 /* FriendsController.swift in Sources */,
 				466B964D222D9A8B0052EA69 /* UIViewController+Extensions.swift in Sources */,
+				464721CB23706AC60083CEFF /* MyGroupCellViewModelFactory.swift in Sources */,
 				C4FE429921D3D767002F28CB /* MyGroupCell.swift in Sources */,
 				46EE160B226E0DF100D8423B /* MessagesController.swift in Sources */,
 				4669B9E72250C5A3006B6D1C /* NewsDefaultTableViewCell.swift in Sources */,
@@ -555,6 +574,7 @@
 				4669B9EB2250E933006B6D1C /* NewsSeparatorTableViewCell.swift in Sources */,
 				46140B7B21FEB94C00967BF6 /* NewsCommentController.swift in Sources */,
 				4669B9DB2250BF26006B6D1C /* NewsTextTableViewCell.swift in Sources */,
+				464721C923706A7E0083CEFF /* MyGroupCellViewModel.swift in Sources */,
 				46797FCD21E9BD6800CA015F /* ShadowView.swift in Sources */,
 				C4ACB73C21C4E46D00459EB9 /* AppDelegate.swift in Sources */,
 				46D38F7422094ED6006BDF78 /* Session.swift in Sources */,
