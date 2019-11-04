@@ -212,7 +212,7 @@ class NewsController: UITableViewController {
             return cell
         case 1:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsTextCell") as? NewsTextTableViewCell else { return UITableViewCell() }
-            
+            /*
             let text = news![indexPath.section].postText
             let attrString = NSMutableAttributedString(string: text, attributes: TextStyles.postStyle)
             
@@ -245,8 +245,8 @@ class NewsController: UITableViewController {
                     cell.expandAction = nil
                 }
             }
-            
-            //cell.newsText.text = news![indexPath.section].postText //TODO: - убрать force-unwrap
+            */
+            cell.newsText.text = news![indexPath.section].postText //TODO: - убрать force-unwrap
             return cell
         case 2:
             if news![indexPath.section].attachments_typePhoto == "" {

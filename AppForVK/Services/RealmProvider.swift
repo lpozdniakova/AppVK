@@ -33,8 +33,8 @@ class RealmProvider {
     
     static func delete<T: Object>(_ items: [T], config: Realm.Configuration = Realm.Configuration.defaultConfiguration) {
         let realm = try? Realm(configuration: config)
-        try? realm?.write {
+        ((try? realm?.write {
             realm?.delete(items)
-        }
+        }) as ()??)
     }
 }

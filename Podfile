@@ -9,6 +9,6 @@ target 'AppForVK' do
   pod 'Alamofire', '~> 4.8'
   pod 'SwiftyJSON', '~> 4.2'
   pod 'Kingfisher', '~> 5.1'
-  pod 'RealmSwift', '~> 3.13'
-  pod 'Texture', '~> 2.8'
+  pod 'RealmSwift', '~> 3.20'
+#  pod 'Texture', '~> 2.8'
 end
