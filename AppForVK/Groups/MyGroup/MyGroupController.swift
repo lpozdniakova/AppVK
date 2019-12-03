@@ -11,8 +11,8 @@ import RealmSwift
 
 class MyGroupController: UITableViewController {
     
-    let vkService = VKService()
     var groups = [Group]()
+    let vkServiceProxy = VKServiceProxy(vkService: VKService())
     
     private let viewModelFactory = MyGroupCellViewModelFactory()
     private var viewModels: [MyGroupCellViewModel] = []
@@ -25,7 +25,7 @@ class MyGroupController: UITableViewController {
                 if !groups.contains(group) {
                     groups.append(group)
                     tableView.reloadData()
-                    vkService.joinGroup(for: group.id)
+                    vkServiceProxy.joinGroup(for: group.id)
                 }
             }
         }
@@ -35,8 +35,7 @@ class MyGroupController: UITableViewController {
         super.viewDidLoad()
         self.tableView.rowHeight = 44
         
-//        proxy.loadVKGroups(for: Session.shared.userId) { [weak self] groups, error in
-        vkService.loadVKGroups(for: Session.shared.userId) { [weak self] groups, error in
+        vkServiceProxy.loadVKGroups(for: Session.shared.userId) { [weak self] groups, error in
             if let error = error {
                 print(error.localizedDescription)
                 return
@@ -69,7 +68,7 @@ class MyGroupController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            vkService.leaveGroup(for: groups[indexPath.row].id)
+            vkServiceProxy.leaveGroup(for: groups[indexPath.row].id)
             groups.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
         }

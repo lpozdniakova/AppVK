@@ -12,6 +12,8 @@ import SwiftyJSON
 
 protocol VKServiceInterface {
     func loadVKGroups(for user: Int, completion: (([Group]?, Error?) -> Void)?)
+    func joinGroup(for group: Int)
+    func leaveGroup(for group: Int)
 }
 
 class VKService: VKServiceInterface {
