@@ -69,6 +69,7 @@
 		C41C98CB21CFA4E300451CC4 /* FriendsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41C98CA21CFA4E300451CC4 /* FriendsCell.swift */; };
 		C41C98CD21CFD82C00451CC4 /* FriendsCollectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41C98CC21CFD82C00451CC4 /* FriendsCollectionController.swift */; };
 		C41C98CF21CFD85C00451CC4 /* FriendsCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41C98CE21CFD85C00451CC4 /* FriendsCollectionCell.swift */; };
+		C47AB18123965B6C005E6736 /* VKServiceProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47AB18023965B6C005E6736 /* VKServiceProxy.swift */; };
 		C4ACB73C21C4E46D00459EB9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4ACB73B21C4E46D00459EB9 /* AppDelegate.swift */; };
 		C4ACB73E21C4E46D00459EB9 /* LogonFormController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4ACB73D21C4E46D00459EB9 /* LogonFormController.swift */; };
 		C4ACB74121C4E46D00459EB9 /* Logon.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C4ACB73F21C4E46D00459EB9 /* Logon.storyboard */; };
@@ -146,6 +147,7 @@
 		C41C98CA21CFA4E300451CC4 /* FriendsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsCell.swift; sourceTree = "<group>"; };
 		C41C98CC21CFD82C00451CC4 /* FriendsCollectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsCollectionController.swift; sourceTree = "<group>"; };
 		C41C98CE21CFD85C00451CC4 /* FriendsCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsCollectionCell.swift; sourceTree = "<group>"; };
+		C47AB18023965B6C005E6736 /* VKServiceProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VKServiceProxy.swift; sourceTree = "<group>"; };
 		C4ACB73821C4E46D00459EB9 /* AppForVK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppForVK.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4ACB73B21C4E46D00459EB9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C4ACB73D21C4E46D00459EB9 /* LogonFormController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogonFormController.swift; sourceTree = "<group>"; };
@@ -283,6 +285,7 @@
 			children = (
 				46D38F7E220B0C93006BDF78 /* VKService.swift */,
 				4606E30022203458007FA007 /* RealmProvider.swift */,
+				C47AB18023965B6C005E6736 /* VKServiceProxy.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -565,6 +568,7 @@
 				C41C98CF21CFD85C00451CC4 /* FriendsCollectionCell.swift in Sources */,
 				46140B8C21FEBA0F00967BF6 /* News.swift in Sources */,
 				46837CEC225A3B9F006D6724 /* NewsWebViewTableViewCell.swift in Sources */,
+				C47AB18123965B6C005E6736 /* VKServiceProxy.swift in Sources */,
 				4677443921DF35DF00D20768 /* NewsController.swift in Sources */,
 				46140B7A21FEB94C00967BF6 /* NewsShareController.swift in Sources */,
 				46D7663A2202235500C4B8B0 /* String+Extensions.swift in Sources */,

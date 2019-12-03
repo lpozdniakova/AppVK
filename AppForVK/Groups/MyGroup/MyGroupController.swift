@@ -35,6 +35,7 @@ class MyGroupController: UITableViewController {
         super.viewDidLoad()
         self.tableView.rowHeight = 44
         
+//        proxy.loadVKGroups(for: Session.shared.userId) { [weak self] groups, error in
         vkService.loadVKGroups(for: Session.shared.userId) { [weak self] groups, error in
             if let error = error {
                 print(error.localizedDescription)

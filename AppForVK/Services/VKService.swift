@@ -10,7 +10,11 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 
-class VKService {
+protocol VKServiceInterface {
+    func loadVKGroups(for user: Int, completion: (([Group]?, Error?) -> Void)?)
+}
+
+class VKService: VKServiceInterface {
     let baseUrl = "https://api.vk.com"
     let versionAPI = "5.92"
     
